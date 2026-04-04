@@ -3,7 +3,7 @@
 import { put as putToBlob } from '@vercel/blob';
 import { CreateProductFormState } from '@/app/admin/products/new/form-state';
 import { CreateProductSchema, getFileName } from '@/schemas/products';
-import { createProduct } from '@/app/services/products';
+import { createProduct } from '@/app/services/data';
 import { getAdmin } from '@/lib/authz';
 
 export async function createProductAction(
