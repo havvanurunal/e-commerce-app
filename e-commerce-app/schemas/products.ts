@@ -1,11 +1,16 @@
 import z from 'zod';
 
-export const NewProductSchema = z.object({
+export const CreateProductSchema = z.object({
   productName: z
     .string()
     .trim()
     .min(3, { message: 'Product name must be at least 3 characters!' })
     .max(30, { message: 'Product name must be max 30 characters!' }),
+  productBrand: z
+    .string()
+    .trim()
+    .min(3, { message: 'Product brand name must be at least 3 characters!' })
+    .max(30, { message: 'Product brand name must be max 30 characters!' }),
   productDescription: z
     .string()
     .trim()
@@ -14,18 +19,47 @@ export const NewProductSchema = z.object({
   price: z.coerce
     .number()
     .positive({ message: 'Price must be a positive number!' }),
-  productImage: z
-    .string()
-    .url({ message: 'Please enter a valid URL!' })
-    .optional()
-    .or(z.literal('')),
+  stock: z.coerce
+    .number()
+    .int({ message: 'Stock must be a whole number!' })
+    .nonnegative({ message: 'Stock must be 0 or more!' }),
+  images: z
+    .union([
+      z.array(z.instanceof(File)),
+      z.instanceof(FileList).transform((fl) => Array.from(fl)),
+    ])
+    .pipe(
+      z
+        .array(z.instanceof(File))
+        .min(1, 'Upload at least one image.')
+        .refine(
+          (files) => files.every((file) => file.size > 0),
+          'One or more selected files are empty.'
+        )
+        .refine(
+          (files) => files.every((file) => file.type.startsWith('image/')),
+          'All uploaded files must be images.'
+        )
+    ),
 });
 
-export type NewProductInput = z.infer<typeof NewProductSchema>;
+export function getFileName(file: File, index: number): string {
+  const fileExtension = file.name.includes('.')
+    ? file.name.split('.').pop()?.toLowerCase()
+    : undefined;
+  const safeExtension = fileExtension
+    ? `.${fileExtension.replace(/[^a-z0-9]/g, '')}`
+    : '';
+  return `products/${Date.now()}-${index}${safeExtension}`;
+}
 
-export type NewProductFormInput = {
+export type CreateProductInput = z.infer<typeof CreateProductSchema>;
+
+export type CreateProductFormInput = {
   productName: string;
+  productBrand: string;
   productDescription: string;
   price: number;
-  productImage?: string;
+  stock: number;
+  images?: FileList;
 };
