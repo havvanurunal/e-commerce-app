@@ -53,7 +53,7 @@ export function NewProductForm() {
   const stockError =
     clientFormErrors?.stock?.message || fieldErrors?.stock?.[0];
   const imageError =
-    clientFormErrors?.images?.message || fieldErrors?.images?.[0];
+    (clientFormErrors?.images as any)?.message || fieldErrors?.images?.[0];
 
   useEffect(() => {
     if (state.status === 'success') {
