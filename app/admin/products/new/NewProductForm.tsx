@@ -203,7 +203,7 @@ export function NewProductForm() {
           />
           {imageError && (
             <FieldDescription id='images-error' variant='error'>
-              {imageError}
+              {String(imageError)}
             </FieldDescription>
           )}
         </Field>
