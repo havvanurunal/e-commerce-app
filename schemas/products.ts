@@ -61,4 +61,5 @@ export type CreateProductFormInput = {
   productDescription: string;
   price: number;
   stock: number;
+  images: any;
 };
