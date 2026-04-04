@@ -52,7 +52,7 @@ export function NewProductForm() {
     clientFormErrors?.price?.message || fieldErrors?.price?.[0];
   const stockError =
     clientFormErrors?.stock?.message || fieldErrors?.stock?.[0];
-  const imageError =
+  const imageError: string | undefined =
     (clientFormErrors?.images as any)?.message || fieldErrors?.images?.[0];
 
   useEffect(() => {
