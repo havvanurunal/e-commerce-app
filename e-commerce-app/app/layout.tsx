@@ -67,7 +67,7 @@ export default async function RootLayout({
                     asChild
                     className={navigationMenuTriggerStyle()}
                   >
-                    <Link href='/user/new-products'>New Product</Link>
+                    <Link href='/admin/products/new'>New Product</Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
 
