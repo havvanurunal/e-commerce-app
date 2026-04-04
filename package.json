@@ -6,7 +6,7 @@
     "dev": "next dev -p 4005",
     "build": "next build",
     "start": "next start -p 4005",
-    "postinstall": "npx prisma@6.6.0 generate",
+    "postinstall": "prisma generate",
     "lint": "eslint"
   },
   "dependencies": {
