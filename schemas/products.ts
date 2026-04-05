@@ -24,22 +24,15 @@ export const CreateProductSchema = z.object({
     .int({ message: 'Stock must be a whole number!' })
     .nonnegative({ message: 'Stock must be 0 or more!' }),
   images: z
-    .union([
-      z.array(z.instanceof(File)),
-      z.instanceof(FileList).transform((fl) => Array.from(fl)),
-    ])
-    .pipe(
-      z
-        .array(z.instanceof(File))
-        .min(1, 'Upload at least one image.')
-        .refine(
-          (files) => files.every((file) => file.size > 0),
-          'One or more selected files are empty.'
-        )
-        .refine(
-          (files) => files.every((file) => file.type.startsWith('image/')),
-          'All uploaded files must be images.'
-        )
+    .array(z.instanceof(File))
+    .min(1, 'Upload at least one image.')
+    .refine(
+      (files) => files.every((file) => file.size > 0),
+      'One or more selected files are empty.'
+    )
+    .refine(
+      (files) => files.every((file) => file.type.startsWith('image/')),
+      'All uploaded files must be images.'
     ),
 });
 
@@ -61,5 +54,4 @@ export type CreateProductFormInput = {
   productDescription: string;
   price: number;
   stock: number;
-  images?: any;
 };

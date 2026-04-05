@@ -52,9 +52,7 @@ export function NewProductForm() {
     clientFormErrors?.price?.message || fieldErrors?.price?.[0];
   const stockError =
     clientFormErrors?.stock?.message || fieldErrors?.stock?.[0];
-  const imageError =
-    ((clientFormErrors?.images as any)?.message as string | undefined) ??
-    fieldErrors?.images?.[0];
+  const imageError = fieldErrors?.images?.[0];
 
   useEffect(() => {
     if (state.status === 'success') {
@@ -196,11 +194,9 @@ export function NewProductForm() {
             type='file'
             multiple
             accept='image/*'
-            aria-invalid={Boolean(
-              (clientFormErrors?.images as any) || fieldErrors?.images
-            )}
+            aria-invalid={Boolean(fieldErrors?.images)}
             aria-describedby='images-error'
-            {...register('images')}
+            name='images'
           />
           {imageError && (
             <FieldDescription id='images-error' variant='error'>
