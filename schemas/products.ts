@@ -1,6 +1,6 @@
 import z from 'zod';
 
-export const CreateProductSchema = z.object({
+export const BaseProductSchema = z.object({
   productName: z
     .string()
     .trim()
@@ -23,6 +23,14 @@ export const CreateProductSchema = z.object({
     .number()
     .int({ message: 'Stock must be a whole number!' })
     .nonnegative({ message: 'Stock must be 0 or more!' }),
+  category: z
+    .string()
+    .trim()
+    .min(3, { message: 'Category must be at least 3 characters!' })
+    .max(30, { message: 'Category must be max 30 characters!' }),
+});
+
+export const CreateProductSchema = BaseProductSchema.extend({
   images: z
     .array(z.instanceof(File))
     .min(1, 'Upload at least one image.')
@@ -36,6 +44,38 @@ export const CreateProductSchema = z.object({
     ),
 });
 
+export const EditProductSchema = BaseProductSchema.extend({
+  images: z
+    .array(z.instanceof(File))
+    .optional()
+    .refine(
+      (files) =>
+        !files || files.every((file) => file.type.startsWith('image/')),
+      'All uploaded files must be images.'
+    ),
+});
+
+export type CreateProductInput = z.infer<typeof CreateProductSchema>;
+export type EditProductInput = z.infer<typeof EditProductSchema>;
+
+export type CreateProductFormInput = {
+  productName: string;
+  productBrand: string;
+  productDescription: string;
+  price: number;
+  stock: number;
+  category: string;
+};
+
+export type EditProductFormInput = {
+  productName: string;
+  productBrand: string;
+  productDescription: string;
+  price: number;
+  stock: number;
+  category: string;
+};
+
 export function getFileName(file: File, index: number): string {
   const fileExtension = file.name.includes('.')
     ? file.name.split('.').pop()?.toLowerCase()
@@ -45,13 +85,3 @@ export function getFileName(file: File, index: number): string {
     : '';
   return `products/${Date.now()}-${index}${safeExtension}`;
 }
-
-export type CreateProductInput = z.infer<typeof CreateProductSchema>;
-
-export type CreateProductFormInput = {
-  productName: string;
-  productBrand: string;
-  productDescription: string;
-  price: number;
-  stock: number;
-};

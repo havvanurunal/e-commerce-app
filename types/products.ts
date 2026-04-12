@@ -8,6 +8,7 @@ export type Product = {
   discountedPrice?: number;
   currency?: string;
   stock: number;
+  category: string;
   tags?: string[];
   userId?: string;
   createdAt?: Date;

@@ -5,12 +5,12 @@ import { Spinner } from '@/components/ui/spinner';
 import { useEffect, useActionState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CreateProductFormInput } from '@/schemas/products';
-import { CreateProductSchema } from '@/schemas/products';
+import { EditProductFormInput, EditProductSchema } from '@/schemas/products';
 import { useRouter } from 'next/navigation';
-import { createProductAction } from '@/app/admin/products/new/actions';
-import { initialCreateProductFormState } from '@/app/admin/products/new/form-state';
+import { editProductAction } from './actions';
+import { initialEditProductFormState } from './form-state';
 import { ProductFormFields } from '@/components/ProductFormFields';
+import type { Product } from '@prisma/client';
 
 export type ProductError = {
   productName?: string[];
@@ -22,37 +22,39 @@ export type ProductError = {
   category?: string[];
 };
 
-export function NewProductForm() {
+export function EditProductForm({ product }: { product: Product }) {
+  const boundAction = editProductAction.bind(null, product.id);
+
   const [state, formAction, isPending] = useActionState(
-    createProductAction,
-    initialCreateProductFormState
+    boundAction,
+    initialEditProductFormState
   );
   const router = useRouter();
 
-  const safeState = state ?? initialCreateProductFormState;
+  const safeState = state ?? initialEditProductFormState;
   const fieldErrors = safeState.fieldErrors ?? {};
 
   const {
     register,
     formState: { errors: clientFormErrors },
-  } = useForm<CreateProductFormInput>({
+  } = useForm<EditProductFormInput>({
     mode: 'onBlur',
-    resolver: zodResolver(CreateProductSchema) as any,
+    resolver: zodResolver(EditProductSchema) as any,
   });
 
   useEffect(() => {
     if (state.status === 'success') {
       setTimeout(() => {
-        router.push('/');
+        router.push('/admin/products');
       }, 2000);
     }
   }, [state.status]);
 
   if (isPending) {
     return (
-      <div className='max-w-2xl mx-auto py-10 px-4'>
+      <div className='max-w-2xl mx-auto py-10 px-4 font-sans'>
         <span>
-          <Spinner data-icon='inline-start' /> Saving Product...
+          <Spinner data-icon='inline-start' /> Updating Product...
         </span>
       </div>
     );
@@ -60,11 +62,11 @@ export function NewProductForm() {
 
   if (state.status === 'success') {
     return (
-      <div className='max-w-2xl mx-auto py-10 px-4'>
+      <div className='max-w-2xl mx-auto py-10 px-4 font-sans'>
         <h1 className='text-2xl font-bold mb-4'>
-          A new product added successfully!
+          Product updated successfully!
         </h1>
-        <p>Redirecting to home page...</p>
+        <p>Redirecting...</p>
       </div>
     );
   }
@@ -76,6 +78,8 @@ export function NewProductForm() {
           fieldErrors={fieldErrors}
           formRegisterAction={register as any}
           clientFormErrors={clientFormErrors}
+          defaultValues={product}
+          isEdit={true}
         />
 
         {safeState.message && (
@@ -92,10 +96,14 @@ export function NewProductForm() {
 
         <div className='flex gap-2'>
           <Button variant='secondary' type='submit' disabled={isPending}>
-            {isPending ? 'Saving...' : 'Save Product'}
+            {isPending ? 'Updating...' : 'Update Product'}
           </Button>
-          <Button variant='secondary' type='reset'>
-            Clear
+          <Button
+            variant='secondary'
+            type='button'
+            onClick={() => router.back()}
+          >
+            Cancel
           </Button>
         </div>
       </div>

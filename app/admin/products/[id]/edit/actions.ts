@@ -1,35 +1,37 @@
 'use server';
 
 import { put as putToBlob } from '@vercel/blob';
-import { CreateProductFormState } from '@/app/admin/products/new/form-state';
-import { CreateProductSchema, getFileName } from '@/schemas/products';
-import { createProduct } from '@/app/services/data';
+import { EditProductFormState } from './form-state';
+import { EditProductSchema } from '@/schemas/products';
+import { updateProduct } from '@/app/services/data';
+import { getFileName } from '@/schemas/products';
 import { getAdmin } from '@/lib/authz';
 
-export async function createProductAction(
-  _prevState: CreateProductFormState,
+export async function editProductAction(
+  id: string,
+  _prevState: EditProductFormState,
   formData: FormData
-): Promise<CreateProductFormState> {
+): Promise<EditProductFormState> {
   const maybeUser = await getAdmin();
   if (!maybeUser)
     return {
       status: 'error',
-      message: 'Only admin user is allowed to create a new product.',
+      message: 'Only admin user is allowed to edit a product.',
       fieldErrors: {},
     };
 
   const files = formData
     .getAll('images')
-    .filter((entry): entry is File => entry instanceof File);
+    .filter((entry): entry is File => entry instanceof File && entry.size > 0);
 
-  const parsed = CreateProductSchema.safeParse({
+  const parsed = EditProductSchema.safeParse({
     productName: formData.get('productName'),
     productBrand: formData.get('productBrand'),
     productDescription: formData.get('productDescription'),
     price: formData.get('price'),
     stock: formData.get('stock'),
     category: formData.get('category'),
-    images: files,
+    images: files.length > 0 ? files : undefined,
   });
 
   if (!parsed.success) {
@@ -50,39 +52,42 @@ export async function createProductAction(
   }
 
   try {
-    const uploaded = await Promise.all(
-      parsed.data.images.map((file, index) => {
-        const filename = getFileName(file, index);
-        return putToBlob(filename, file, {
-          access: 'public',
-          addRandomSuffix: true,
-        });
-      })
-    );
+    let imageUrls: string[] | undefined;
+    if (parsed.data.images && parsed.data.images.length > 0) {
+      const uploaded = await Promise.all(
+        parsed.data.images.map((file, index) => {
+          const filename = getFileName(file, index);
+          return putToBlob(filename, file, {
+            access: 'public',
+            addRandomSuffix: true,
+          });
+        })
+      );
+      imageUrls = uploaded.map((item) => item.url);
+    }
 
-    await createProduct({
+    await updateProduct(id, {
       productName: parsed.data.productName,
       productBrand: parsed.data.productBrand,
       productDescription: parsed.data.productDescription,
       price: parsed.data.price,
       stock: parsed.data.stock,
       category: parsed.data.category,
-      images: uploaded.map((item) => item.url),
-      userId: maybeUser.sub!,
+      ...(imageUrls && { images: imageUrls }),
     });
 
     return {
       status: 'success',
-      message: 'Product created successfully.',
+      message: 'Product updated successfully.',
       fieldErrors: {},
     };
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : 'Unknown error';
-    console.error('createProductAction failed:', errorMessage);
+    console.error('updateProduction failed:', errorMessage);
     return {
       status: 'error',
-      message: `Could not create product. ${errorMessage}`,
+      message: `Could not update product. ${errorMessage}`,
       fieldErrors: {},
     };
   }

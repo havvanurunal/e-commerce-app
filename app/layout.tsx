@@ -40,7 +40,7 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className='min-h-full flex flex-col'>
-        <NavigationMenu className='max-w-full px-4 py-2'>
+        <NavigationMenu className='max-w-full px-4 py-2 bg-gray-50'>
           <NavigationMenuList className=''>
             <NavigationMenuItem>
               <NavigationMenuLink

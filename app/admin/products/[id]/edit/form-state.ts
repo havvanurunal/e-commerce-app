@@ -1,4 +1,4 @@
-export type CreateProductFormState = {
+export type EditProductFormState = {
   status: 'idle' | 'error' | 'success';
   message: string;
   fieldErrors: {
@@ -12,7 +12,7 @@ export type CreateProductFormState = {
   };
 };
 
-export const initialCreateProductFormState: CreateProductFormState = {
+export const initialEditProductFormState: EditProductFormState = {
   status: 'idle',
   message: '',
   fieldErrors: {},
