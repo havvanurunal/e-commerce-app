@@ -3,33 +3,23 @@
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { useEffect, useActionState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Resolver, useForm, UseFormRegister } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CreateProductFormInput } from '@/schemas/products';
 import { CreateProductSchema } from '@/schemas/products';
 import { useRouter } from 'next/navigation';
 import { createProductAction } from '@/app/admin/products/new/actions';
-import { initialCreateProductFormState } from '@/app/admin/products/new/form-state';
+import { initialProductFormState } from '@/app/admin/products/form-state';
 import { ProductFormFields } from '@/components/ProductFormFields';
-
-export type ProductError = {
-  productName?: string[];
-  productBrand?: string[];
-  productDescription?: string[];
-  price?: string[];
-  images?: string[];
-  stock?: string[];
-  category?: string[];
-};
 
 export function NewProductForm() {
   const [state, formAction, isPending] = useActionState(
     createProductAction,
-    initialCreateProductFormState
+    initialProductFormState
   );
   const router = useRouter();
 
-  const safeState = state ?? initialCreateProductFormState;
+  const safeState = state ?? initialProductFormState;
   const fieldErrors = safeState.fieldErrors ?? {};
 
   const {
@@ -37,7 +27,9 @@ export function NewProductForm() {
     formState: { errors: clientFormErrors },
   } = useForm<CreateProductFormInput>({
     mode: 'onBlur',
-    resolver: zodResolver(CreateProductSchema) as any,
+    resolver: zodResolver(
+      CreateProductSchema
+    ) as Resolver<CreateProductFormInput>,
   });
 
   useEffect(() => {
@@ -74,7 +66,9 @@ export function NewProductForm() {
       <div className='flex flex-col max-w-xl mx-auto mt-10 gap-4'>
         <ProductFormFields
           fieldErrors={fieldErrors}
-          formRegisterAction={register as any}
+          formRegisterAction={
+            register as UseFormRegister<CreateProductFormInput>
+          }
           clientFormErrors={clientFormErrors}
         />
 

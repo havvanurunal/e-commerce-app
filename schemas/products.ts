@@ -58,23 +58,15 @@ export const EditProductSchema = BaseProductSchema.extend({
 export type CreateProductInput = z.infer<typeof CreateProductSchema>;
 export type EditProductInput = z.infer<typeof EditProductSchema>;
 
-export type CreateProductFormInput = {
-  productName: string;
-  productBrand: string;
-  productDescription: string;
-  price: number;
-  stock: number;
-  category: string;
-};
+export type CreateProductFormInput = Omit<
+  z.infer<typeof CreateProductSchema>,
+  'images'
+> & { images: File[] };
 
-export type EditProductFormInput = {
-  productName: string;
-  productBrand: string;
-  productDescription: string;
-  price: number;
-  stock: number;
-  category: string;
-};
+export type EditProductFormInput = Omit<
+  z.infer<typeof EditProductSchema>,
+  'images'
+> & { images: File[] };
 
 export function getFileName(file: File, index: number): string {
   const fileExtension = file.name.includes('.')

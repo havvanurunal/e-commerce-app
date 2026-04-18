@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { auth0 } from '@/lib/auth0';
 
-const ROLES_CLAIM = 'https//ecom-app/roles';
+const ROLES_CLAIM = 'https://ecom-app/roles';
 
 export enum AppRole {
   USER = 'user',

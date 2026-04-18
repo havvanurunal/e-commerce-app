@@ -14,3 +14,17 @@ export type Product = {
   createdAt?: Date;
   updatedAt?: Date;
 };
+
+export type ProductFormState = {
+  status: 'idle' | 'error' | 'success';
+  message: string;
+  fieldErrors: {
+    productName?: string;
+    productBrand?: string;
+    productDescription?: string;
+    price?: string;
+    images?: string;
+    stock?: string;
+    category?: string;
+  };
+};

@@ -3,11 +3,7 @@ import Image from 'next/image';
 
 export default async function Profile() {
   const session = await auth0.getSession();
-  const user = session?.user;
-
-  if (!user) {
-    return null;
-  }
+  const user = session!.user;
 
   return (
     <div className='flex flex-col mx-auto py-10 px-4 font-sans'>

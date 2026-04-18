@@ -3,35 +3,23 @@
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { useEffect, useActionState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Resolver, useForm, UseFormRegister } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { EditProductFormInput, EditProductSchema } from '@/schemas/products';
 import { useRouter } from 'next/navigation';
 import { editProductAction } from './actions';
-import { initialEditProductFormState } from './form-state';
+import { initialProductFormState } from '@/app/admin/products/form-state';
 import { ProductFormFields } from '@/components/ProductFormFields';
 import type { Product } from '@prisma/client';
 
-export type ProductError = {
-  productName?: string[];
-  productBrand?: string[];
-  productDescription?: string[];
-  price?: string[];
-  images?: string[];
-  stock?: string[];
-  category?: string[];
-};
-
 export function EditProductForm({ product }: { product: Product }) {
-  const boundAction = editProductAction.bind(null, product.id);
-
   const [state, formAction, isPending] = useActionState(
-    boundAction,
-    initialEditProductFormState
+    editProductAction,
+    initialProductFormState
   );
   const router = useRouter();
 
-  const safeState = state ?? initialEditProductFormState;
+  const safeState = state ?? initialProductFormState;
   const fieldErrors = safeState.fieldErrors ?? {};
 
   const {
@@ -39,7 +27,7 @@ export function EditProductForm({ product }: { product: Product }) {
     formState: { errors: clientFormErrors },
   } = useForm<EditProductFormInput>({
     mode: 'onBlur',
-    resolver: zodResolver(EditProductSchema) as any,
+    resolver: zodResolver(EditProductSchema) as Resolver<EditProductFormInput>,
   });
 
   useEffect(() => {
@@ -73,10 +61,11 @@ export function EditProductForm({ product }: { product: Product }) {
 
   return (
     <form action={formAction}>
+      <input type='hidden' name='id' value={product.id} />
       <div className='flex flex-col max-w-xl mx-auto mt-10 gap-4'>
         <ProductFormFields
           fieldErrors={fieldErrors}
-          formRegisterAction={register as any}
+          formRegisterAction={register as UseFormRegister<EditProductFormInput>}
           clientFormErrors={clientFormErrors}
           defaultValues={product}
           isEdit={true}

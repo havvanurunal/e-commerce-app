@@ -10,7 +10,7 @@ import {
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
 import Link from 'next/link';
-import { auth0 } from '@/lib/auth0';
+import { getSessionUser, isAdmin } from '@/lib/authz';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -32,8 +32,9 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth0.getSession();
-  const user = session?.user;
+  const user = await getSessionUser();
+  const admin = isAdmin(user);
+
   return (
     <html
       lang='en'
@@ -62,14 +63,27 @@ export default async function RootLayout({
                   </NavigationMenuLink>
                 </NavigationMenuItem>
 
-                <NavigationMenuItem>
-                  <NavigationMenuLink
-                    asChild
-                    className={navigationMenuTriggerStyle()}
-                  >
-                    <Link href='/admin/products/new'>New Product</Link>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
+                {!admin && (
+                  <NavigationMenuItem>
+                    <NavigationMenuLink
+                      asChild
+                      className={navigationMenuTriggerStyle()}
+                    >
+                      <Link href='/products'>Products</Link>
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                )}
+
+                {admin && (
+                  <NavigationMenuItem>
+                    <NavigationMenuLink
+                      asChild
+                      className={navigationMenuTriggerStyle()}
+                    >
+                      <Link href='/admin/products'>Products</Link>
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                )}
 
                 <NavigationMenuItem>
                   <NavigationMenuLink
@@ -81,6 +95,7 @@ export default async function RootLayout({
                 </NavigationMenuItem>
               </>
             )}
+
             {!user && (
               <>
                 <NavigationMenuItem>

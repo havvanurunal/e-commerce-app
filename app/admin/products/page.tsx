@@ -1,7 +1,7 @@
 import { getProducts } from '@/app/services/data';
 import { formatMoney } from '@/lib/utils';
 import Link from 'next/link';
-import { deleteProductAction } from './actions';
+import { DeleteProductButton } from '@/components/DeleteProductButton';
 
 export default async function AdminProductsPage() {
   const products = await getProducts();
@@ -59,14 +59,8 @@ export default async function AdminProductsPage() {
                     >
                       Edit
                     </Link>
-                    <form action={deleteProductAction.bind(null, product.id)}>
-                      <button
-                        type='submit'
-                        className='text-red-600 hover:underline'
-                      >
-                        Delete
-                      </button>
-                    </form>
+
+                    <DeleteProductButton id={product.id} />
                   </td>
                 </tr>
               ))

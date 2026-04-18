@@ -1,15 +1,15 @@
 'use server';
 
 import { put as putToBlob } from '@vercel/blob';
-import { CreateProductFormState } from '@/app/admin/products/new/form-state';
+import { ProductFormState } from '@/types/products';
 import { CreateProductSchema, getFileName } from '@/schemas/products';
 import { createProduct } from '@/app/services/data';
 import { getAdmin } from '@/lib/authz';
 
 export async function createProductAction(
-  _prevState: CreateProductFormState,
+  _prevState: ProductFormState,
   formData: FormData
-): Promise<CreateProductFormState> {
+): Promise<ProductFormState> {
   const maybeUser = await getAdmin();
   if (!maybeUser)
     return {

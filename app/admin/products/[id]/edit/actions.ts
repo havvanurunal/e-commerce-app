@@ -1,17 +1,17 @@
 'use server';
 
 import { put as putToBlob } from '@vercel/blob';
-import { EditProductFormState } from './form-state';
+import { ProductFormState } from '@/types/products';
 import { EditProductSchema } from '@/schemas/products';
 import { updateProduct } from '@/app/services/data';
 import { getFileName } from '@/schemas/products';
 import { getAdmin } from '@/lib/authz';
 
 export async function editProductAction(
-  id: string,
-  _prevState: EditProductFormState,
+  _prevState: ProductFormState,
   formData: FormData
-): Promise<EditProductFormState> {
+): Promise<ProductFormState> {
+  const id = formData.get('id') as string;
   const maybeUser = await getAdmin();
   if (!maybeUser)
     return {
