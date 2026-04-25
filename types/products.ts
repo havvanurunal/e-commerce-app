@@ -13,6 +13,9 @@ export type Product = {
   userId?: string;
   createdAt?: Date;
   updatedAt?: Date;
+  stripeProductId?: string;
+  stripePriceId?: string;
+  quantity?: number;
 };
 
 export type ProductFormState = {

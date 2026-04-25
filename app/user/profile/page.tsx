@@ -1,9 +1,21 @@
+import { TypographyH1 } from '@/components/ui/h1';
 import { auth0 } from '@/lib/auth0';
 import Image from 'next/image';
 
 export default async function Profile() {
   const session = await auth0.getSession();
-  const user = session!.user;
+
+  if (!session) {
+    return (
+      <main className='min-h-dvh flex items-center justify-center text-center'>
+        <TypographyH1>
+          Welcome! Please log in to see your profile page.
+        </TypographyH1>
+      </main>
+    );
+  }
+
+  const user = session.user;
 
   return (
     <div className='flex flex-col mx-auto py-10 px-4 font-sans'>

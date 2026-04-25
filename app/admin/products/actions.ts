@@ -10,14 +10,14 @@ export async function deleteProductAction(id: string): Promise<void> {
   if (!maybeUser) return;
 
   try {
-    const product = await getProductById(id); // find the product first
+    const product = await getProductById(id);
     if (!product) return;
 
     if (product.images.length > 0) {
-      await Promise.all(product.images.map((url) => del(url))); // delete the image from vercel
+      await Promise.all(product.images.map((url) => del(url)));
     }
 
-    await deleteProduct(id); // delete from mongoDB
+    await deleteProduct(id);
     revalidatePath('/admin/products');
   } catch (error) {
     const errorMessage =

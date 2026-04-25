@@ -1,29 +1,51 @@
 import Image from 'next/image';
-import Profile from '@/components/Profile';
+import { getProducts } from '@/app/services/data';
+import { formatMoney } from '@/lib/utils';
+import CheckoutButton from './CheckoutButton';
+import AddtoBasket from './cart/AddtoBasket';
 
 export default async function Home() {
+  const products = await getProducts();
   return (
-    <main className='min-h-screen bg-[#060812] flex items-center justify-center px-6 py-12 relative overflow-hidden'>
-      <div className='absolute top-0 left-1/2 -translate-x-1/2 w-150 md:w-225 h-75 md:h-112.5 bg-blue-600/20 rounded-full blur-3xl pointer-events-none' />
-      <div className='absolute bottom-0 left-1/2 -translate-x-1/2 w-100 md:w-150 h-50 md:h-75 bg-violet-600/15 rounded-full blur-3xl pointer-events-none' />
+    <main className='min-h-screen flex  px-6 py-6 relative overflow-hidden'>
+      <div className='max-w-7xl mx-auto px-6 py-8'>
+        <h1 className='text-2xl font-medium text-center mb-8'>Products</h1>
 
-      <div className='relative w-full max-w-sm md:max-w-md'>
-        <div className='bg-white/4 backdrop-blur-2xl border border-white/8 rounded-3xl shadow-2xl shadow-black/60 overflow-hidden'>
-          <div className='h-px bg-linear-to-r from-transparent via-blue-500/60 to-transparent' />
+        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
+          {products.map((product) => (
+            <div
+              key={product.id}
+              className='rounded-xl border border-gray-200 bg-white p-4 flex flex-col gap-3'
+            >
+              {product.images[0] && (
+                <Image
+                  src={product.images[0]}
+                  alt={product.productName}
+                  width={400}
+                  height={192}
+                  className='w-full h-48 object-cover rounded-xl'
+                />
+              )}
+              <div>
+                <p className='text-2xl font-semibold text-gray-900'>
+                  {product.productName}
+                </p>
+                <p className='text-sm text-gray-500'>{product.productBrand}</p>
+                <p className='text-sm text-gray-400'>{product.category}</p>
+              </div>
+              <p className='text-lg font-medium text-gray-900'>
+                {formatMoney(product.price)}
+              </p>
 
-          <div className='px-8 md:px-10 pt-9 md:pt-10 pb-9 md:pb-10 flex flex-col items-center gap-6 md:gap-7'>
-            <Image
-              src='https://cdn.auth0.com/quantum-assets/dist/latest/logos/auth0/auth0-lockup-en-ondark.png'
-              alt='Auth0'
-              width={120}
-              height={28}
-              className='h-6 md:h-7 w-auto'
-            />
-            <div className='w-full h-px bg-white/6' />
-            <div className='flex flex-col items-center gap-4 w-full'>
-              <Profile />
+              <div className='flex gap-2'>
+                <CheckoutButton stripePriceId={product.stripePriceId} />
+                <AddtoBasket productId={product.id} />
+              </div>
             </div>
-          </div>
+          ))}
+          {products.length === 0 && (
+            <p className='text-gray-500 col-span-full'>No products yet.</p>
+          )}
         </div>
       </div>
     </main>

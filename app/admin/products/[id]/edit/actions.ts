@@ -3,22 +3,24 @@
 import { put as putToBlob } from '@vercel/blob';
 import { ProductFormState } from '@/types/products';
 import { EditProductSchema } from '@/schemas/products';
-import { updateProduct } from '@/app/services/data';
+import { getProductById, updateProduct } from '@/app/services/data';
 import { getFileName } from '@/schemas/products';
-import { getAdmin } from '@/lib/authz';
+import { requireAdmin } from '@/lib/authz';
+import { stripe } from '@/lib/stripe';
 
 export async function editProductAction(
   _prevState: ProductFormState,
   formData: FormData
 ): Promise<ProductFormState> {
-  const id = formData.get('id') as string;
-  const maybeUser = await getAdmin();
-  if (!maybeUser)
+  const id = formData.get('id');
+  if (!id || typeof id !== 'string')
     return {
       status: 'error',
-      message: 'Only admin user is allowed to edit a product.',
+      message: 'Id is missing',
       fieldErrors: {},
     };
+
+  await requireAdmin();
 
   const files = formData
     .getAll('images')
@@ -52,6 +54,15 @@ export async function editProductAction(
   }
 
   try {
+    const product = await getProductById(id);
+    if (!product) {
+      return {
+        status: 'error',
+        message: 'Product not found.',
+        fieldErrors: {},
+      };
+    }
+
     let imageUrls: string[] | undefined;
     if (parsed.data.images && parsed.data.images.length > 0) {
       const uploaded = await Promise.all(
@@ -66,6 +77,24 @@ export async function editProductAction(
       imageUrls = uploaded.map((item) => item.url);
     }
 
+    let stripePrice;
+    if (product.price !== parsed.data.price) {
+      await stripe.prices.update(product.stripePriceId, { active: false });
+
+      stripePrice = await stripe.prices.create({
+        product: product.stripeProductId,
+        unit_amount: parsed.data.price * 100,
+        currency: 'usd',
+      });
+    }
+
+    if (product.productName !== parsed.data.productName || imageUrls) {
+      await stripe.products.update(product.stripeProductId, {
+        name: parsed.data.productName,
+        ...(imageUrls && { images: imageUrls }),
+      });
+    }
+
     await updateProduct(id, {
       productName: parsed.data.productName,
       productBrand: parsed.data.productBrand,
@@ -73,6 +102,8 @@ export async function editProductAction(
       price: parsed.data.price,
       stock: parsed.data.stock,
       category: parsed.data.category,
+      stripeProductId: product.stripeProductId,
+      stripePriceId: stripePrice ? stripePrice.id : product.stripePriceId,
       ...(imageUrls && { images: imageUrls }),
     });
 
