@@ -9,17 +9,17 @@ import { CreateProductFormInput } from '@/schemas/products';
 import { CreateProductSchema } from '@/schemas/products';
 import { useRouter } from 'next/navigation';
 import { createProductAction } from '@/app/admin/products/new/actions';
-import { initialProductFormState } from '@/app/admin/products/form-state';
+import { initialProductFormState } from '@/app/form-state';
 import { ProductFormFields } from '@/components/ProductFormFields';
 
 export function NewProductForm() {
-  const [state, formAction, isPending] = useActionState(
+  const [newProductState, newProductFormAction, isPending] = useActionState(
     createProductAction,
     initialProductFormState
   );
   const router = useRouter();
 
-  const safeState = state ?? initialProductFormState;
+  const safeState = newProductState ?? initialProductFormState;
   const fieldErrors = safeState.fieldErrors ?? {};
 
   const {
@@ -33,12 +33,12 @@ export function NewProductForm() {
   });
 
   useEffect(() => {
-    if (state.status === 'success') {
+    if (newProductState.status === 'success') {
       setTimeout(() => {
         router.push('/');
       }, 2000);
     }
-  }, [state.status]);
+  }, [newProductState.status]);
 
   if (isPending) {
     return (
@@ -50,7 +50,7 @@ export function NewProductForm() {
     );
   }
 
-  if (state.status === 'success') {
+  if (newProductState.status === 'success') {
     return (
       <div className='max-w-2xl mx-auto py-10 px-4'>
         <h1 className='text-2xl font-bold mb-4'>
@@ -62,7 +62,7 @@ export function NewProductForm() {
   }
 
   return (
-    <form action={formAction}>
+    <form action={newProductFormAction}>
       <div className='flex flex-col max-w-xl mx-auto mt-10 gap-4'>
         <ProductFormFields
           fieldErrors={fieldErrors}

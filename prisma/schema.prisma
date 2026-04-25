@@ -28,4 +28,19 @@ model Product {
   userId             String
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
+  stripeProductId    String
+  stripePriceId      String
+  carts              Cart[]
+}
+
+model Cart {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId String   @db.ObjectId
+  userId    String
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  product   Product  @relation(fields: [productId], references: [id])
+
+  @@unique([userId, productId])
 }

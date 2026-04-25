@@ -8,18 +8,18 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { EditProductFormInput, EditProductSchema } from '@/schemas/products';
 import { useRouter } from 'next/navigation';
 import { editProductAction } from './actions';
-import { initialProductFormState } from '@/app/admin/products/form-state';
+import { initialProductFormState } from '@/app/form-state';
 import { ProductFormFields } from '@/components/ProductFormFields';
 import type { Product } from '@prisma/client';
 
 export function EditProductForm({ product }: { product: Product }) {
-  const [state, formAction, isPending] = useActionState(
+  const [editProductState, editProductFormAction, isPending] = useActionState(
     editProductAction,
     initialProductFormState
   );
   const router = useRouter();
 
-  const safeState = state ?? initialProductFormState;
+  const safeState = editProductState ?? initialProductFormState;
   const fieldErrors = safeState.fieldErrors ?? {};
 
   const {
@@ -31,12 +31,12 @@ export function EditProductForm({ product }: { product: Product }) {
   });
 
   useEffect(() => {
-    if (state.status === 'success') {
+    if (editProductState.status === 'success') {
       setTimeout(() => {
         router.push('/admin/products');
       }, 2000);
     }
-  }, [state.status]);
+  }, [editProductState.status]);
 
   if (isPending) {
     return (
@@ -48,7 +48,7 @@ export function EditProductForm({ product }: { product: Product }) {
     );
   }
 
-  if (state.status === 'success') {
+  if (editProductState.status === 'success') {
     return (
       <div className='max-w-2xl mx-auto py-10 px-4 font-sans'>
         <h1 className='text-2xl font-bold mb-4'>
@@ -60,7 +60,7 @@ export function EditProductForm({ product }: { product: Product }) {
   }
 
   return (
-    <form action={formAction}>
+    <form action={editProductFormAction}>
       <input type='hidden' name='id' value={product.id} />
       <div className='flex flex-col max-w-xl mx-auto mt-10 gap-4'>
         <ProductFormFields
