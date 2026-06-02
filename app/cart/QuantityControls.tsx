@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import { decrementQuantityAction, incrementQuantityAction } from './actions';
 
@@ -10,32 +12,24 @@ export default function QuantityControlsButtons({
 }) {
   return (
     <div className='flex gap-3'>
-      <form action={decrementQuantityAction}>
-        <input type='hidden' value={cartItemId} name='cartItemId' />
-        <Button
-          disabled={quantity <= 1}
-          variant='default'
-          size='sm'
-          className='flex-1 cursor-pointer'
-          type='submit'
-          role='link'
-        >
-          -
-        </Button>
-      </form>
+      <Button
+        disabled={quantity <= 1}
+        variant='default'
+        onClick={() => decrementQuantityAction(cartItemId)}
+        size='sm'
+        className='flex-1 cursor-pointer'
+      >
+        -
+      </Button>
       {quantity}
-      <form action={incrementQuantityAction}>
-        <input type='hidden' value={cartItemId} name='cartItemId' />
-        <Button
-          variant='default'
-          size='sm'
-          className='flex-1 cursor-pointer'
-          type='submit'
-          role='link'
-        >
-          +
-        </Button>
-      </form>
+      <Button
+        variant='default'
+        onClick={() => incrementQuantityAction(cartItemId)}
+        size='sm'
+        className='flex-1 cursor-pointer'
+      >
+        +
+      </Button>
     </div>
   );
 }

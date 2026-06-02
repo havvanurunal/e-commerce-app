@@ -98,7 +98,7 @@ export async function updateCart(
 ) {
   await prisma.cart.upsert({
     where: { userId_productId: { userId, productId } },
-    update: { quantity: { increment: 1 } },
+    update: { quantity: { increment: quantity } },
     create: { userId, productId, quantity },
   });
 }
@@ -106,6 +106,12 @@ export async function updateCart(
 export async function deleteCart(cartItemId: string) {
   return await prisma.cart.delete({
     where: { id: cartItemId },
+  });
+}
+
+export async function clearCart(userId: string) {
+  return await prisma.cart.deleteMany({
+    where: { userId },
   });
 }
 

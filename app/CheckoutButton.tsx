@@ -1,22 +1,33 @@
-import { Button } from '@/components/ui/button';
+'use client';
 
-export default async function CheckoutButton({
+import { Button } from '@/components/ui/button';
+import { addToBasketAction } from '@/app/cart/actions';
+
+export default function CheckoutButton({
   stripePriceId,
+  productId,
 }: {
   stripePriceId: string;
+  productId: string;
 }) {
+  async function handleClick() {
+    await addToBasketAction(productId);
+
+    const response = await fetch('/api/checkout', { method: 'POST' });
+    const data = await response.json();
+
+    if (data.url) {
+      window.location.href = data.url;
+    }
+  }
+
   return (
-    <form action='/cart' method='POST'>
-      <input type='hidden' value={stripePriceId} name='stripePriceId' />
-      <Button
-        variant='default'
-        size='sm'
-        className='flex-1 cursor-pointer bg-green-700'
-        type='submit'
-        role='link'
-      >
-        Buy Now
-      </Button>
-    </form>
+    <Button
+      variant='default'
+      className='cursor-pointer bg-gray-700 hover:bg-gray-800'
+      onClick={handleClick}
+    >
+      Buy Now
+    </Button>
   );
 }

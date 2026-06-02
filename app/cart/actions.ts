@@ -9,14 +9,8 @@ import {
 } from '../services/data';
 import { revalidatePath } from 'next/cache';
 
-export async function addToBasketAction(formData: FormData): Promise<void> {
+export async function addToBasketAction(productId: string): Promise<void> {
   const user = await requireUser();
-
-  const productId = formData.get('productId');
-  if (!productId || typeof productId !== 'string') {
-    return;
-  }
-
   try {
     await updateCart(user.sub!, productId, 1);
   } catch (error) {
@@ -24,11 +18,7 @@ export async function addToBasketAction(formData: FormData): Promise<void> {
   }
 }
 
-export async function removeFromCartAction(formData: FormData): Promise<void> {
-  const cartItemId = formData.get('cartItemId');
-  if (!cartItemId || typeof cartItemId !== 'string') {
-    return;
-  }
+export async function removeFromCartAction(cartItemId: string): Promise<void> {
   try {
     await deleteCart(cartItemId);
     revalidatePath('/cart');
@@ -38,12 +28,8 @@ export async function removeFromCartAction(formData: FormData): Promise<void> {
 }
 
 export async function incrementQuantityAction(
-  formData: FormData
+  cartItemId: string
 ): Promise<void> {
-  const cartItemId = formData.get('cartItemId');
-  if (!cartItemId || typeof cartItemId !== 'string') {
-    return;
-  }
   try {
     await incrementQuantity(cartItemId);
     revalidatePath('/cart');
@@ -53,12 +39,8 @@ export async function incrementQuantityAction(
 }
 
 export async function decrementQuantityAction(
-  formData: FormData
+  cartItemId: string
 ): Promise<void> {
-  const cartItemId = formData.get('cartItemId');
-  if (!cartItemId || typeof cartItemId !== 'string') {
-    return;
-  }
   try {
     await decrementQuantity(cartItemId);
     revalidatePath('/cart');

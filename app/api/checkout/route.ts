@@ -9,6 +9,7 @@ export async function POST(request: NextRequest) {
     const origin = headersList.get('origin');
     const user = await requireUser();
     const cartItems = await getCartItems(user.sub!);
+    console.log('cartItems:', cartItems);
 
     const session = await stripe.checkout.sessions.create({
       line_items: cartItems.map((cartItem) => ({
@@ -25,7 +26,7 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    return NextResponse.redirect(session.url, 303);
+    return NextResponse.json({ url: session.url });
   } catch (err) {
     if (err instanceof Error) {
       return NextResponse.json({ error: err.message }, { status: 500 });

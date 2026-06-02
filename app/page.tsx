@@ -38,7 +38,10 @@ export default async function Home() {
               </p>
 
               <div className='flex gap-2'>
-                <CheckoutButton stripePriceId={product.stripePriceId} />
+                <CheckoutButton
+                  stripePriceId={product.stripePriceId}
+                  productId={product.id}
+                />
                 <AddtoBasket productId={product.id} />
               </div>
             </div>

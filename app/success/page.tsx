@@ -3,6 +3,8 @@ import { stripe } from '../../lib/stripe';
 import { CheckCircle } from 'lucide-react';
 import { formatMoney } from '@/lib/utils';
 import Link from 'next/link';
+import { getSessionUser } from '@/lib/authz';
+import { clearCart } from '@/app/services/data';
 
 export default async function Success({
   searchParams,
@@ -27,6 +29,10 @@ export default async function Success({
   }
 
   if (session.status === 'complete') {
+    const user = await getSessionUser();
+    if (user?.sub) {
+      await clearCart(user.sub);
+    }
     return (
       <section
         id='success'
