@@ -16,6 +16,8 @@ interface ProductPayload {
   category: string;
   images: string[];
   userId: string;
+  stripeProductId: string;
+  stripePriceId: string;
 }
 
 export async function createProduct(product: ProductPayload) {
@@ -29,6 +31,8 @@ export async function createProduct(product: ProductPayload) {
       category: product.category,
       images: product.images,
       userId: product.userId,
+      stripeProductId: product.stripeProductId,
+      stripePriceId: product.stripePriceId,
     },
   });
 }
@@ -62,6 +66,8 @@ export async function updateProduct(
       category: product.category,
       images: product.images,
       updatedAt: new Date(),
+      stripeProductId: product.stripeProductId,
+      stripePriceId: product.stripePriceId,
     },
   });
 }
@@ -69,5 +75,75 @@ export async function updateProduct(
 export async function deleteProduct(id: string) {
   return await prisma.product.delete({
     where: { id },
+  });
+}
+
+// services/data.ts
+export async function getCartItems(userId: string) {
+  const cart = await prisma.cart.findUnique({
+    where: { userId },
+    include: {
+      items: {
+        include: {
+          product: true,
+        },
+      },
+    },
+  });
+
+  return cart?.items ?? [];
+}
+
+export async function updateCart(
+  userId: string,
+  productId: string,
+  quantity: number
+) {
+  // 1. Find or create the Cart for this user
+  const cart = await prisma.cart.upsert({
+    where: { userId },
+    update: {},
+    create: { userId },
+  });
+
+  // 2. Find or create/update the CartItem inside that cart
+  const existingItem = await prisma.cartItem.findFirst({
+    where: { cartId: cart.id, productId },
+  });
+
+  if (existingItem) {
+    await prisma.cartItem.update({
+      where: { id: existingItem.id },
+      data: { quantity: { increment: quantity } },
+    });
+  } else {
+    await prisma.cartItem.create({
+      data: { cartId: cart.id, productId, quantity },
+    });
+  }
+}
+export async function deleteCart(cartItemId: string) {
+  return await prisma.cart.delete({
+    where: { id: cartItemId },
+  });
+}
+
+export async function clearCart(userId: string) {
+  return await prisma.cart.deleteMany({
+    where: { userId },
+  });
+}
+
+export async function incrementQuantity(cartItemId: string) {
+  await prisma.cartItem.update({
+    where: { id: cartItemId },
+    data: { quantity: { increment: 1 } },
+  });
+}
+
+export async function decrementQuantity(cartItemId: string) {
+  await prisma.cartItem.update({
+    where: { id: cartItemId },
+    data: { quantity: { decrement: 1 } },
   });
 }

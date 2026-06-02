@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { LayoutGrid, PlusSquare, ShoppingCart, Settings } from 'lucide-react';
+import { LayoutGrid, PlusSquare, ShoppingCart } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,

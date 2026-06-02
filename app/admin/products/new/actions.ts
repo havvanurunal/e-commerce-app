@@ -4,19 +4,14 @@ import { put as putToBlob } from '@vercel/blob';
 import { ProductFormState } from '@/types/products';
 import { CreateProductSchema, getFileName } from '@/schemas/products';
 import { createProduct } from '@/app/services/data';
-import { getAdmin } from '@/lib/authz';
+import { requireAdmin } from '@/lib/authz';
+import { stripe } from '@/lib/stripe';
 
 export async function createProductAction(
   _prevState: ProductFormState,
   formData: FormData
 ): Promise<ProductFormState> {
-  const maybeUser = await getAdmin();
-  if (!maybeUser)
-    return {
-      status: 'error',
-      message: 'Only admin user is allowed to create a new product.',
-      fieldErrors: {},
-    };
+  const adminUser = await requireAdmin();
 
   const files = formData
     .getAll('images')
@@ -60,6 +55,17 @@ export async function createProductAction(
       })
     );
 
+    const stripeProduct = await stripe.products.create({
+      name: parsed.data.productName,
+      images: uploaded.map((item) => item.url),
+    });
+
+    const stripePrice = await stripe.prices.create({
+      product: stripeProduct.id,
+      unit_amount: parsed.data.price * 100,
+      currency: 'usd',
+    });
+
     await createProduct({
       productName: parsed.data.productName,
       productBrand: parsed.data.productBrand,
@@ -68,7 +74,9 @@ export async function createProductAction(
       stock: parsed.data.stock,
       category: parsed.data.category,
       images: uploaded.map((item) => item.url),
-      userId: maybeUser.sub!,
+      userId: adminUser.sub!,
+      stripeProductId: stripeProduct.id,
+      stripePriceId: stripePrice.id,
     });
 
     return {
