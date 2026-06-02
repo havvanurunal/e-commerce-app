@@ -38,7 +38,7 @@ export function NewProductForm() {
         router.push('/');
       }, 2000);
     }
-  }, [newProductState.status]);
+  }, [newProductState.status, router]);
 
   if (isPending) {
     return (

@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { addToBasketAction } from '@/app/cart/actions';
 
 export default function CheckoutButton({
-  stripePriceId,
   productId,
 }: {
   stripePriceId: string;

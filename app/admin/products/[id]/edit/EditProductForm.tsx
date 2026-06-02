@@ -36,7 +36,7 @@ export function EditProductForm({ product }: { product: Product }) {
         router.push('/admin/products');
       }, 2000);
     }
-  }, [editProductState.status]);
+  }, [editProductState.status, router]);
 
   if (isPending) {
     return (
