@@ -71,7 +71,7 @@ export default async function Success({
         </p>
         <Link
           href='/'
-          className='mt-4 text-sm tracking-widset uppercase underline underline-offset-4 text-gray-700 hover: text-gray-900'
+          className='mt-4 text-sm tracking-widset uppercase underline underline-offset-4 hover: text-gray-900'
         >
           Continue Shopping
         </Link>
