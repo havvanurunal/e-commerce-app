@@ -133,6 +133,7 @@ export async function deleteCart(cartItemId: string) {
 }
 
 export async function clearCart(userId: string) {
+  // v2
   const cart = await prisma.cart.findUnique({
     where: { userId },
   });
