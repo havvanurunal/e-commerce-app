@@ -78,9 +78,7 @@ export async function deleteProduct(id: string) {
   });
 }
 
-// services/data.ts
 export async function getCartItems(userId: string) {
-  console.log('getCartItems userId:', userId);
   const cart = await prisma.cart.findUnique({
     where: { userId },
     include: {
@@ -91,7 +89,6 @@ export async function getCartItems(userId: string) {
       },
     },
   });
-  console.log('cart found:', cart);
   return cart?.items ?? [];
 }
 
@@ -106,13 +103,11 @@ export async function updateCart(
     update: {},
     create: { userId },
   });
-  console.log('cart id:', cart.id);
 
   // 2. Find or create/update the CartItem inside that cart
   const existingItem = await prisma.cartItem.findFirst({
     where: { cartId: cart.id, productId },
   });
-  console.log('existingItem:', existingItem);
 
   if (existingItem) {
     await prisma.cartItem.update({

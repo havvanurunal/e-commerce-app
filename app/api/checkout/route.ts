@@ -17,6 +17,7 @@ export async function POST(request: NextRequest) {
       })),
       mode: 'payment',
       success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+      metadata: { userId: user.sub! },
     });
 
     if (session.url === null) {

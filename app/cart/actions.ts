@@ -11,7 +11,6 @@ import { revalidatePath } from 'next/cache';
 
 export async function addToBasketAction(productId: string): Promise<void> {
   const user = await requireUser();
-  console.log('user.sub:', user.sub);
   try {
     await updateCart(user.sub!, productId, 1);
     console.log('updateCart done');
