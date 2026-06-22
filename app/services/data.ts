@@ -15,7 +15,6 @@ interface ProductPayload {
   stock: number;
   category: string;
   images: string[];
-  userId: string;
   stripeProductId: string;
   stripePriceId: string;
 }
@@ -30,7 +29,6 @@ export async function createProduct(product: ProductPayload) {
       stock: product.stock,
       category: product.category,
       images: product.images,
-      userId: product.userId,
       stripeProductId: product.stripeProductId,
       stripePriceId: product.stripePriceId,
     },
