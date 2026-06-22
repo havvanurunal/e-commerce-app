@@ -9,11 +9,19 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  auth0UserId      String   @unique
+  email            String   @unique
+  emailVerified    Boolean  @default(false)
+  firstname        String?
+  lastname         String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  marketingConsent Boolean  @default(false)
+  cart             Cart?    @relation(fields: [cartId], references: [id])
+  cartId           String?  @db.ObjectId
+
+  @@map("users")
 }
 
 model Product {
@@ -25,7 +33,6 @@ model Product {
   stock              Int
   category           String
   images             String[]
-  userId             String
   createdAt          DateTime   @default(now())
   updatedAt          DateTime   @updatedAt
   stripeProductId    String
@@ -35,10 +42,11 @@ model Product {
 
 model Cart {
   id        String     @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String     @unique
+  userId    String     @unique @db.ObjectId
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   items     CartItem[]
+  users     User[]
 }
 
 model CartItem {

@@ -122,7 +122,7 @@ export async function updateCart(
 }
 
 export async function deleteCart(cartItemId: string) {
-  return await prisma.cart.delete({
+  return await prisma.cartItem.delete({
     where: { id: cartItemId },
   });
 }
