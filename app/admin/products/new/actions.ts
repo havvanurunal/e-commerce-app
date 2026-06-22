@@ -74,7 +74,6 @@ export async function createProductAction(
       stock: parsed.data.stock,
       category: parsed.data.category,
       images: uploaded.map((item) => item.url),
-      userId: adminUser.sub!,
       stripeProductId: stripeProduct.id,
       stripePriceId: stripePrice.id,
     });
