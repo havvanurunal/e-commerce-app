@@ -2,6 +2,10 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/Navbar';
+import { CartProvider } from '@/app/cart/CartProvider';
+import { CartDrawer } from './cart/CartDrawer';
+import { getSessionUser } from '@/lib/authz';
+import { getCartItems } from './services/data';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -23,14 +27,19 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const user = await getSessionUser();
+  const cartItems = user ? await getCartItems(user.sub!) : [];
   return (
     <html
       lang='en'
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className='min-h-full flex flex-col'>
-        <Navbar />
-        {children}
+        <CartProvider>
+          <Navbar />
+          <CartDrawer cartItems={cartItems} />
+          {children}
+        </CartProvider>
       </body>
     </html>
   );

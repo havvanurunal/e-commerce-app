@@ -3,9 +3,12 @@ import { getSessionUser, isAdmin } from '@/lib/authz';
 import { User, LogOut, ShoppingCart, Package } from 'lucide-react';
 import { Logo } from '@/components/Logo';
 import { Button } from './ui/button';
+import { getCartItems } from '@/app/services/data';
 
 export default async function Navbar() {
   const user = await getSessionUser();
+  const cartItems = user ? await getCartItems(user.sub!) : [];
+  const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
   const admin = isAdmin(user);
 
   return (
@@ -32,14 +35,18 @@ export default async function Navbar() {
                 <Package className='size-6 text-gray-600' />
               </Link>
             )}
-
-            <Link
-              href='/cart'
-              aria-label='shopping cart'
-              className='p-2 rounded-md hover:bg-gray-100'
-            >
-              <ShoppingCart className='size-6 text-gray-600' />
-            </Link>
+            <div className='relative inline-flex'>
+              <Link
+                href='/cart'
+                aria-label='shopping cart'
+                className='p-2 rounded-md hover:bg-gray-100'
+              >
+                <ShoppingCart className='size-6 text-gray-600' />
+              </Link>
+              <span className='absolute top-0 right-0 bg-gray-700 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center'>
+                {cartCount}
+              </span>
+            </div>
 
             <Link
               href='/auth/logout/'
