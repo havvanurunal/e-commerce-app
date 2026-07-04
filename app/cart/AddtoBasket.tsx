@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { addToBasketAction } from './actions';
-import { useCart } from '@/app/cart/CartProvider';
+import { useCart } from './CartProvider';
 import { useRouter } from 'next/navigation';
 
 export default function AddtoBasket({ productId }: { productId: string }) {

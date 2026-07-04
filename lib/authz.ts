@@ -17,7 +17,7 @@ export type Auth0SessionUser = Record<string, unknown> & {
   picture?: string;
 };
 
-function tryGetRolesClaimFromIdToken(token: unknown): string[] {
+export function tryGetRolesClaimFromIdToken(token: unknown): string[] {
   if (typeof token !== 'string') return [];
   const parts = token.split('.');
   if (parts.length < 2) return [];

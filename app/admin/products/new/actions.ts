@@ -4,15 +4,12 @@ import { put as putToBlob } from '@vercel/blob';
 import { ProductFormState } from '@/types/products';
 import { CreateProductSchema, getFileName } from '@/schemas/products';
 import { createProduct } from '@/app/services/data';
-import { requireAdmin } from '@/lib/authz';
 import { stripe } from '@/lib/stripe';
 
 export async function createProductAction(
   _prevState: ProductFormState,
   formData: FormData
 ): Promise<ProductFormState> {
-  const adminUser = await requireAdmin();
-
   const files = formData
     .getAll('images')
     .filter((entry): entry is File => entry instanceof File);
