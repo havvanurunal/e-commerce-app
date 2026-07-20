@@ -37,7 +37,7 @@ export function NewProductForm() {
   useEffect(() => {
     if (newProductState.status === 'success') {
       setTimeout(() => {
-        router.push('/');
+        router.push('/admin/products');
       }, 2000);
     }
   }, [newProductState.status, router]);

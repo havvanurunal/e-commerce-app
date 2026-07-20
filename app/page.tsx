@@ -12,12 +12,16 @@ export default async function Home() {
       <div className='max-w-7xl mx-auto px-6 py-8'>
         <h1 className='text-2xl font-medium text-center mb-8'>Products</h1>
 
-        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
+        <div
+          className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'
+          data-testid='products-container'
+        >
           {products.map((product) => {
             return (
               <div
                 key={product.id}
                 className='rounded-xl border border-gray-200 bg-white p-4 flex flex-col gap-3'
+                data-testid='product-card'
               >
                 {product.images[0] && (
                   <Image

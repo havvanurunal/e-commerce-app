@@ -95,14 +95,12 @@ export async function updateCart(
   productId: string,
   quantity: number
 ) {
-  // 1. Find or create the Cart for this user
   const cart = await prisma.cart.upsert({
     where: { userId },
     update: {},
     create: { userId },
   });
 
-  // 2. Find or create/update the CartItem inside that cart
   const existingItem = await prisma.cartItem.findFirst({
     where: { cartId: cart.id, productId },
   });
@@ -126,7 +124,6 @@ export async function deleteCart(cartItemId: string) {
 }
 
 export async function clearCart(userId: string) {
-  // v2
   const cart = await prisma.cart.findUnique({
     where: { userId },
   });
@@ -154,4 +151,39 @@ export async function decrementQuantity(cartItemId: string) {
     where: { id: cartItemId },
     data: { quantity: { decrement: 1 } },
   });
+}
+
+export async function getUserByAuth0Id(auth0UserId: string) {
+  return prisma.user.findUnique({ where: { auth0UserId } });
+}
+
+export async function getUserOrders(userId: string) {
+  const orders = await prisma.order.findMany({
+    where: { userId },
+    include: {
+      orderItems: {
+        include: {
+          product: true,
+        },
+      },
+    },
+  });
+  return orders;
+}
+
+export async function getAllOrders() {
+  const orders = await prisma.order.findMany({
+    orderBy: {
+      createdAt: 'desc',
+    },
+    include: {
+      user: true,
+      orderItems: {
+        include: {
+          product: true,
+        },
+      },
+    },
+  });
+  return orders;
 }
