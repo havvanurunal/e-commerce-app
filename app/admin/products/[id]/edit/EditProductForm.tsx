@@ -24,6 +24,7 @@ export function EditProductForm({ product }: { product: Product }) {
 
   const {
     register,
+    control,
     formState: { errors: clientFormErrors },
   } = useForm<EditProductFormInput>({
     mode: 'onBlur',
@@ -69,6 +70,7 @@ export function EditProductForm({ product }: { product: Product }) {
           clientFormErrors={clientFormErrors}
           defaultValues={product}
           isEdit={true}
+          control={control}
         />
 
         {safeState.message && (

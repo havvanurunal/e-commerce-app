@@ -3,6 +3,7 @@ import { formatMoney } from '@/lib/utils';
 import Link from 'next/link';
 import { DeleteProductButton } from '@/components/DeleteProductButton';
 import Image from 'next/image';
+import { categoryLabels } from '@/lib/constants';
 
 export default async function AdminProductsPage() {
   const products = await getProducts();
@@ -62,7 +63,9 @@ export default async function AdminProductsPage() {
                   </td>
                   <td className='px-4 py-3'>{product.productDescription}</td>
                   <td className='px-4 py-3'>{product.productBrand}</td>
-                  <td className='px-4 py-3'>{product.category}</td>
+                  <td className='px-4 py-3'>
+                    {categoryLabels[product.category]}
+                  </td>
                   <td className='px-4 py-3'>{formatMoney(product.price)}</td>
                   <td className='px-4 py-3'>{product.stock}</td>
 

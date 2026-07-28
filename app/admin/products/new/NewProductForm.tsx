@@ -26,6 +26,7 @@ export function NewProductForm() {
 
   const {
     register,
+    control,
     formState: { errors: clientFormErrors },
   } = useForm<CreateProductFormInput>({
     mode: 'onBlur',
@@ -72,6 +73,7 @@ export function NewProductForm() {
             register as UseFormRegister<CreateProductFormInput>
           }
           clientFormErrors={clientFormErrors}
+          control={control}
         />
 
         {safeState.message && (

@@ -1,6 +1,11 @@
 'use client';
 
-import { UseFormRegister, FieldErrors } from 'react-hook-form';
+import {
+  UseFormRegister,
+  FieldErrors,
+  Control,
+  Controller,
+} from 'react-hook-form';
 import {
   CreateProductFormInput,
   EditProductFormInput,
@@ -8,6 +13,16 @@ import {
 import { Input } from '@/components/ui/input';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
 import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { categoryOptions } from '@/lib/constants';
 
 type FormInput = CreateProductFormInput | EditProductFormInput;
 
@@ -32,6 +47,7 @@ type ProductFormFieldsProps = {
   formRegisterAction?: UseFormRegister<FormInput>;
   clientFormErrors?: FieldErrors<FormInput>;
   isEdit?: boolean;
+  control?: Control<FormInput>;
 };
 
 export function ProductFormFields({
@@ -40,6 +56,7 @@ export function ProductFormFields({
   formRegisterAction,
   clientFormErrors,
   isEdit = false,
+  control,
 }: ProductFormFieldsProps) {
   const productNameError =
     clientFormErrors?.productName?.message || fieldErrors?.productName;
@@ -165,19 +182,54 @@ export function ProductFormFields({
 
       <Field>
         <FieldLabel htmlFor='product-category'>Category</FieldLabel>
-        <Input
-          id='product-category'
-          type='text'
-          placeholder='e.g. Electronics'
-          defaultValue={defaultValues?.category}
-          aria-invalid={Boolean(
-            clientFormErrors?.category || fieldErrors?.category
-          )}
-          aria-describedby='product-category-error'
-          {...(formRegisterAction
-            ? formRegisterAction('category')
-            : { name: 'category' })}
-        />
+        {formRegisterAction && control ? (
+          <Controller
+            name='category'
+            control={control}
+            render={({ field }) => (
+              <>
+                <Input
+                  type='hidden'
+                  value={field.value}
+                  name='category'
+                  readOnly
+                />
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger
+                    className='w-full max-w-48'
+                    id='product-category'
+                  >
+                    <SelectValue placeholder='Select a category' />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Categories</SelectLabel>
+                      {categoryOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </>
+            )}
+          />
+        ) : (
+          <Input
+            id='product-category'
+            type='text'
+            placeholder='e.g. Makeup'
+            defaultValue={defaultValues?.category}
+            aria-invalid={Boolean(
+              clientFormErrors?.category || fieldErrors?.category
+            )}
+            aria-describedby='product-category-error'
+            {...(formRegisterAction
+              ? formRegisterAction('category')
+              : { name: 'category' })}
+          />
+        )}
         {categoryError && (
           <FieldDescription id='product-category-error' variant='error'>
             {categoryError}

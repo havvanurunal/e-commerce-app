@@ -15,6 +15,13 @@ type Address {
   country    String
 }
 
+enum Category {
+  SKINCARE
+  MAKEUP
+  HAIRCARE
+  FRAGRANCE
+}
+
 model User {
   id               String   @id @default(auto()) @map("_id") @db.ObjectId
   auth0UserId      String   @unique
@@ -40,7 +47,7 @@ model Product {
   productDescription String
   price              Float
   stock              Int
-  category           String
+  category           Category
   images             String[]
   createdAt          DateTime    @default(now())
   updatedAt          DateTime    @updatedAt
