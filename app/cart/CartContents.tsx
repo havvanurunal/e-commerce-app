@@ -4,6 +4,7 @@ import DeleteButton from './DeleteButton';
 import QuantityControlsButtons from './QuantityControls';
 import ConfirmCartButton from './ConfirmCartButton';
 import { CartItem, Product } from '@prisma/client';
+import { categoryLabels } from '@/lib/constants';
 
 export default function CartContents({
   cartItems,
@@ -48,7 +49,7 @@ export default function CartContents({
                 {cartItem.product.productBrand}
               </p>
               <p className='text-sm text-gray-400'>
-                {cartItem.product.category}
+                {categoryLabels[cartItem.product.category]}
               </p>
             </div>
             <p className='text-lg font-medium text-gray-900'>
