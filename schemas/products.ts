@@ -1,3 +1,4 @@
+import { Category } from '@prisma/client';
 import z from 'zod';
 
 export const BaseProductSchema = z.object({
@@ -23,11 +24,7 @@ export const BaseProductSchema = z.object({
     .number()
     .int({ message: 'Stock must be a whole number!' })
     .nonnegative({ message: 'Stock must be 0 or more!' }),
-  category: z
-    .string()
-    .trim()
-    .min(3, { message: 'Category must be at least 3 characters!' })
-    .max(30, { message: 'Category must be max 30 characters!' }),
+  category: z.enum(Category),
 });
 
 export const CreateProductSchema = BaseProductSchema.extend({

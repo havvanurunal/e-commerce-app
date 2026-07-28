@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { Category } from '@prisma/client';
 
 export enum Currency {
   SEK = 'SEK',
@@ -13,7 +14,7 @@ interface ProductPayload {
   productDescription: string;
   price: number;
   stock: number;
-  category: string;
+  category: Category;
   images: string[];
   stripeProductId: string;
   stripePriceId: string;
