@@ -3,6 +3,9 @@ import { getProducts } from '@/app/services/data';
 import { formatMoney } from '@/lib/utils';
 import CheckoutButton from './CheckoutButton';
 import AddtoBasket from './cart/AddtoBasket';
+import { getLowStockLabel, isOutOfStock } from '@/lib/stock';
+import { Badge } from '@/components/ui/badge';
+import { categoryLabels } from '@/lib/constants';
 
 export default async function Home() {
   const products = await getProducts();
@@ -17,29 +20,42 @@ export default async function Home() {
           data-testid='products-container'
         >
           {products.map((product) => {
+            const lowStockLabel = getLowStockLabel(product.stock);
+            const outOfStockLabel = isOutOfStock(product.stock);
+            const stockBadgeText = outOfStockLabel ?? lowStockLabel;
             return (
               <div
                 key={product.id}
                 className='rounded-xl border border-gray-200 bg-white p-4 flex flex-col gap-3'
                 data-testid='product-card'
               >
-                {product.images[0] && (
-                  <Image
-                    src={product.images[0]}
-                    alt={product.productName}
-                    width={400}
-                    height={192}
-                    className='w-full h-48 object-cover rounded-xl'
-                  />
-                )}
+                <div className='relative'>
+                  {product.images[0] && (
+                    <Image
+                      src={product.images[0]}
+                      alt={product.productName}
+                      width={400}
+                      height={192}
+                      className='w-full h-48 object-cover rounded-xl'
+                    />
+                  )}
+                  {stockBadgeText && (
+                    <Badge className='bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300 absolute top-2 left-2'>
+                      {stockBadgeText}
+                    </Badge>
+                  )}
+                </div>
                 <div>
                   <p className='text-2xl font-semibold text-gray-900'>
                     {product.productName}
                   </p>
+
                   <p className='text-sm text-gray-500'>
                     {product.productBrand}
                   </p>
-                  <p className='text-sm text-gray-400'>{product.category}</p>
+                  <p className='text-sm text-gray-400'>
+                    {categoryLabels[product.category]}
+                  </p>
                 </div>
                 <p className='text-lg font-medium text-gray-900'>
                   {formatMoney(product.price)}
@@ -49,8 +65,12 @@ export default async function Home() {
                   <CheckoutButton
                     stripePriceId={product.stripePriceId}
                     productId={product.id}
+                    disabled={Boolean(outOfStockLabel)}
                   />
-                  <AddtoBasket productId={product.id} />
+                  <AddtoBasket
+                    productId={product.id}
+                    disabled={Boolean(outOfStockLabel)}
+                  />
                 </div>
               </div>
             );
