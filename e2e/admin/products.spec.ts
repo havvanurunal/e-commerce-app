@@ -10,7 +10,7 @@ test('admin can create, update, and delete a product', async ({ page }) => {
   const productPrice = '1000';
   const expectedPriceText = '$1,000.00';
   const stock = '20';
-  const category = 'e2e-test-product-category';
+  const category = 'Makeup';
   const productImage = testImage;
   let row = page.getByTestId('product-row').filter({ hasText: productName });
   const updatedProductName = `e2e-test-product-${Date.now()
@@ -27,7 +27,8 @@ test('admin can create, update, and delete a product', async ({ page }) => {
     await page.getByLabel('Description').fill(productDescription);
     await page.getByLabel('Price').fill(productPrice);
     await page.getByLabel('Stock').fill(stock);
-    await page.getByLabel('Category').fill(category);
+    await page.getByLabel('Category').click();
+    await page.getByRole('option', { name: 'Makeup' }).click();
     await page.getByLabel('Product Images').setInputFiles(productImage);
     await page.getByRole('button', { name: 'Save Product' }).click();
     await page.waitForURL('/admin/products');
@@ -88,14 +89,12 @@ test('shows validation errors for invalid product input', async ({ page }) => {
   const productDescription = 'e2e-desc';
   const productPrice = '0';
   const stock = '-5';
-  const category = 'e2';
 
   await page.getByLabel('Product Name').fill(productName);
   await page.getByLabel('Brand').fill(productBrand);
   await page.getByLabel('Description').fill(productDescription);
   await page.getByLabel('Price').fill(productPrice);
   await page.getByLabel('Stock').fill(stock);
-  await page.getByLabel('Category').fill(category);
   await page.getByRole('button', { name: 'Save Product' }).click();
 
   await expect(
@@ -111,9 +110,6 @@ test('shows validation errors for invalid product input', async ({ page }) => {
     page.getByText('Price must be a positive number!')
   ).toBeVisible();
   await expect(page.getByText('Stock must be 0 or more!')).toBeVisible();
-  await expect(
-    page.getByText('Category must be at least 3 characters!')
-  ).toBeVisible();
 });
 
 test('shows an error when no image is selected', async ({ page }) => {
@@ -123,14 +119,15 @@ test('shows an error when no image is selected', async ({ page }) => {
   const productDescription = 'e2e-test-product-description';
   const productPrice = '1000';
   const stock = '20';
-  const category = 'e2e-test-product-category';
+  const category = 'Skincare';
 
   await page.getByLabel('Product Name').fill(productName);
   await page.getByLabel('Brand').fill(productBrand);
   await page.getByLabel('Description').fill(productDescription);
   await page.getByLabel('Price').fill(productPrice);
   await page.getByLabel('Stock').fill(stock);
-  await page.getByLabel('Category').fill(category);
+  await page.getByLabel('Category').click();
+  await page.getByRole('option', { name: category }).click();
   await page.getByRole('button', { name: 'Save Product' }).click();
 
   await expect(page.getByText('Saving Product...')).toBeHidden();
@@ -148,14 +145,15 @@ test('shows an error when Product Name length exceeds 50 characters limit', asyn
   const productDescription = 'e2e-test-product-description';
   const productPrice = '1000';
   const stock = '20';
-  const category = 'e2e-test-product-category';
+  const category = 'Haircare';
 
   await page.getByLabel('Product Name').fill(productName);
   await page.getByLabel('Brand').fill(productBrand);
   await page.getByLabel('Description').fill(productDescription);
   await page.getByLabel('Price').fill(productPrice);
   await page.getByLabel('Stock').fill(stock);
-  await page.getByLabel('Category').fill(category);
+  await page.getByLabel('Category').click();
+  await page.getByRole('option', { name: category }).click();
   await page.getByRole('button', { name: 'Save Product' }).click();
 
   await expect(

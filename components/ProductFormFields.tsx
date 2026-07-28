@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { categoryOptions } from '@/lib/constants';
+import { Category } from '@prisma/client';
 
 type FormInput = CreateProductFormInput | EditProductFormInput;
 
@@ -42,7 +43,7 @@ type ProductFormFieldsProps = {
     productDescription?: string;
     price?: number;
     stock?: number;
-    category?: string;
+    category?: Category;
   };
   formRegisterAction?: UseFormRegister<FormInput>;
   clientFormErrors?: FieldErrors<FormInput>;
