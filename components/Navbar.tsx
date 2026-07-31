@@ -12,7 +12,7 @@ export default async function Navbar() {
   const admin = isAdmin(user);
 
   return (
-    <nav className='w-full px-30 py-2 bg-gray-100 flex items-center justify-between gap-2'>
+    <nav className='sticky top-0 z-50 w-full px-30 py-2 bg-gray-100 flex items-center justify-between gap-2'>
       <Logo />
 
       <div className='flex'>
