@@ -15,7 +15,7 @@ export default async function AdminLayout({
       <SidebarProvider>
         <main className='mx-auto flex w-full max-w-7xl gap-4 px-6 py-6 md:gap-6 md:py-8'>
           <AdminSidebar />
-          <SidebarInset>
+          <SidebarInset className='border border-gray-50 rounded-2xl bg-white'>
             <section className='flex-1 rounded-2xl border border-gray-200 bg-white p-4 md:p-6'>
               {children}
             </section>

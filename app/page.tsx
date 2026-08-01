@@ -46,7 +46,7 @@ export default async function Home() {
                   )}
                 </div>
                 <div>
-                  <p className='text-2xl font-semibold text-gray-900'>
+                  <p className='text-lg font-semibold text-gray-900'>
                     {product.productName}
                   </p>
 
@@ -57,7 +57,7 @@ export default async function Home() {
                     {categoryLabels[product.category]}
                   </p>
                 </div>
-                <p className='text-lg font-medium text-gray-900'>
+                <p className='text-ml font-medium text-gray-900'>
                   {formatMoney(product.price)}
                 </p>
 

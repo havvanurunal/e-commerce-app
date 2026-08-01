@@ -52,8 +52,8 @@ export default async function AdminProductsPage() {
                       <Image
                         src={product.images[0]}
                         alt={product.productName}
-                        width={52}
-                        height={52}
+                        width={400}
+                        height={192}
                         className='object-cover rounded'
                       />
                     )}

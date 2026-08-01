@@ -13,6 +13,7 @@ import { useRouter } from 'next/navigation';
 import { createProductAction } from './actions';
 import { initialProductFormState } from '@/app/form-state';
 import { ProductFormFields } from '@/components/ProductFormFields';
+import { Category } from '@prisma/client';
 
 export function NewProductForm() {
   const [newProductState, newProductFormAction, isPending] = useActionState(
@@ -33,6 +34,7 @@ export function NewProductForm() {
     resolver: zodResolver(
       CreateProductSchema
     ) as Resolver<CreateProductFormInput>,
+    defaultValues: { category: '' as Category },
   });
 
   useEffect(() => {
