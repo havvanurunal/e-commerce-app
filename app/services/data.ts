@@ -16,7 +16,7 @@ interface ProductPayload {
   stock: number;
   category: Category;
   images: string[];
-  isActive: boolean;
+  isActive?: boolean;
   stripeProductId: string;
   stripePriceId: string;
 }
