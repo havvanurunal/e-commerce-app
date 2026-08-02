@@ -16,6 +16,7 @@ interface ProductPayload {
   stock: number;
   category: Category;
   images: string[];
+  isActive: boolean;
   stripeProductId: string;
   stripePriceId: string;
 }
@@ -35,12 +36,20 @@ export async function createProduct(product: ProductPayload) {
     },
   });
 }
+export async function getAllProducts() {
+  return await prisma.product.findMany({
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+}
 
 export async function getProducts() {
   return await prisma.product.findMany({
     orderBy: {
       createdAt: 'desc',
     },
+    where: { isActive: true },
   });
 }
 
@@ -65,6 +74,7 @@ export async function updateProduct(
       category: product.category,
       images: product.images,
       updatedAt: new Date(),
+      isActive: product.isActive,
       stripeProductId: product.stripeProductId,
       stripePriceId: product.stripePriceId,
     },

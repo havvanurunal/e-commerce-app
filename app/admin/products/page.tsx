@@ -1,12 +1,13 @@
-import { getProducts } from '@/app/services/data';
+import { getAllProducts } from '@/app/services/data';
 import { formatMoney } from '@/lib/utils';
 import Link from 'next/link';
 import { DeleteProductButton } from '@/components/DeleteProductButton';
 import Image from 'next/image';
 import { categoryLabels } from '@/lib/constants';
+import { ToggleProductActivationButton } from '@/components/ToggleProductActivationButton';
 
 export default async function AdminProductsPage() {
-  const products = await getProducts();
+  const products = await getAllProducts();
 
   return (
     <div>
@@ -70,15 +71,21 @@ export default async function AdminProductsPage() {
                   <td className='px-4 py-3'>{product.stock}</td>
 
                   <td className='px-4 py-3'>
-                    <Link
-                      href={`/admin/products/${product.id}/edit`}
-                      className='text-blue-700  px-5 py-1 bg-blue-200 hover:bg-blue-300
-                      rounded-lg'
-                    >
-                      Edit
-                    </Link>
+                    <div className='flex flex-col items-center gap-2'>
+                      <Link
+                        href={`/admin/products/${product.id}/edit`}
+                        className='text-blue-700 px-4.5 py-0.5 bg-blue-200 hover:bg-blue-300
+                      rounded-lg border border-blue-300'
+                      >
+                        Edit
+                      </Link>
 
-                    <DeleteProductButton id={product.id} />
+                      <DeleteProductButton id={product.id} />
+                      <ToggleProductActivationButton
+                        id={product.id}
+                        isActive={product.isActive}
+                      />
+                    </div>
                   </td>
                 </tr>
               ))

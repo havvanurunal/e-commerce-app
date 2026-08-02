@@ -53,6 +53,7 @@ model Product {
   updatedAt          DateTime    @updatedAt
   stripeProductId    String
   stripePriceId      String
+  isActive           Boolean     @default(true)
   cartItems          CartItem[]
   orderItems         OrderItem[]
 

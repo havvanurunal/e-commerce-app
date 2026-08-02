@@ -21,7 +21,9 @@ export function DeleteProductButton({ id }: { id: string }) {
     <>
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button variant='destructive'>Delete</Button>
+          <Button variant='destructive' className='border border-red-200'>
+            Delete
+          </Button>
         </AlertDialogTrigger>
         <AlertDialogContent size='sm'>
           <AlertDialogHeader>
