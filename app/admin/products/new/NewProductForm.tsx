@@ -5,10 +5,12 @@ import { Spinner } from '@/components/ui/spinner';
 import { useEffect, useActionState } from 'react';
 import { Resolver, useForm, UseFormRegister } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CreateProductFormInput } from '@/schemas/products';
-import { CreateProductSchema } from '@/schemas/products';
+import {
+  CreateProductSchema,
+  CreateProductFormInput,
+} from '@/schemas/products';
 import { useRouter } from 'next/navigation';
-import { createProductAction } from '@/app/admin/products/new/actions';
+import { createProductAction } from './actions';
 import { initialProductFormState } from '@/app/form-state';
 import { ProductFormFields } from '@/components/ProductFormFields';
 

@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { auth0 } from '@/lib/auth0';
 
-const ROLES_CLAIM = 'https://ecom-app/roles';
+export const ROLES_CLAIM = 'https://ecom-app/roles';
 
 export enum AppRole {
   USER = 'user',
@@ -17,7 +17,7 @@ export type Auth0SessionUser = Record<string, unknown> & {
   picture?: string;
 };
 
-function tryGetRolesClaimFromIdToken(token: unknown): string[] {
+export function tryGetRolesClaimFromIdToken(token: unknown): string[] {
   if (typeof token !== 'string') return [];
   const parts = token.split('.');
   if (parts.length < 2) return [];
