@@ -50,7 +50,7 @@ describe('NewProductForm', () => {
     const { getByText } = render(<NewProductForm />);
     expect(getByText('A new product added successfully!')).toBeInTheDocument();
     jest.advanceTimersByTime(2000);
-    expect(pushMock).toHaveBeenCalledWith('/');
+    expect(pushMock).toHaveBeenCalledWith('/admin/products');
   });
   it('shows initial form', () => {
     (useRouter as jest.Mock).mockReturnValue({

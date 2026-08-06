@@ -38,6 +38,7 @@ export function DeleteProductButton({ id }: { id: string }) {
             <AlertDialogAction
               variant='destructive'
               onClick={() => deleteProductAction(id)}
+              data-testid='confirm-delete-button'
             >
               Delete
             </AlertDialogAction>
