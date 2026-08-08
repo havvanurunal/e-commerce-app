@@ -1,6 +1,6 @@
 import { deleteProductAction } from '@/app/admin/products/actions';
 import { DeleteProductButton } from './DeleteProductButton';
-import { fireEvent, getByTestId, render } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 
 jest.mock('@/app/admin/products/actions', () => ({
   deleteProductAction: jest.fn(),
