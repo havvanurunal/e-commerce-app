@@ -1,7 +1,7 @@
 import { useRouter } from 'next/navigation';
 import { useActionState } from 'react';
 import { fireEvent, render } from '@testing-library/react';
-import { Category, Product } from '@prisma/client';
+import { Product } from '@prisma/client';
 import { initialProductFormState } from '@/app/form-state';
 import { EditProductForm } from './EditProductForm';
 
@@ -26,13 +26,12 @@ function createMockProduct(overrides: Partial<Product> = {}): Product {
     productDescription: 'Beauty product',
     price: 20.0,
     stock: 10,
-    category: 'SKINCARE' as Category,
+    category: 'SKINCARE',
     images: [],
     createdAt: new Date(),
     updatedAt: new Date(),
     stripeProductId: '5648594',
     stripePriceId: '4747859',
-    isActive: true,
     ...overrides,
   };
 }
