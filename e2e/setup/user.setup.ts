@@ -75,7 +75,7 @@ setup('authenticate as user', async ({ browser }) => {
     );
   }
 
-  await expect(page.getByRole('heading', { name: 'My Account' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'My Profile' })).toBeVisible();
 
   await context.storageState({ path: authFile });
   await context.close();

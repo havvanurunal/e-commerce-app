@@ -1,8 +1,8 @@
 import { useRouter } from 'next/navigation';
 import { useActionState } from 'react';
 import { render } from '@testing-library/react';
-import { initialProductFormState } from '@/app/form-state';
 import { NewProductForm } from './NewProductForm';
+import { initialProductFormState } from '@/types/products';
 
 jest.mock('./actions', () => ({
   createProductAction: jest.fn(),

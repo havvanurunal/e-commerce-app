@@ -187,3 +187,23 @@ export async function getAllOrders() {
   });
   return orders;
 }
+
+export async function updateUserProfile(
+  userId: string,
+  data: {
+    firstname?: string;
+    lastname?: string;
+    phoneNumber?: string;
+    address?: {
+      line1: string;
+      city: string;
+      postalCode: string;
+      country: string;
+    };
+  }
+) {
+  return await prisma.user.update({
+    where: { id: userId },
+    data,
+  });
+}

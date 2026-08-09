@@ -11,8 +11,8 @@ import {
 } from '@/schemas/products';
 import { useRouter } from 'next/navigation';
 import { createProductAction } from './actions';
-import { initialProductFormState } from '@/app/form-state';
 import { ProductFormFields } from '@/components/ProductFormFields';
+import { initialProductFormState } from '@/types/products';
 
 export function NewProductForm() {
   const [newProductState, newProductFormAction, isPending] = useActionState(

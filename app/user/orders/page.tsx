@@ -29,8 +29,10 @@ export default async function UserOrdersPage() {
   const orders = await getUserOrders(dbUser.id);
 
   return (
-    <div>
-      <h1 className='text-2xl font-semibold tracking-[-0.02em]'>Orders</h1>
+    <div className='py-10 px-4'>
+      <h1 className='text-2xl font-semibold tracking-[-0.02em] text-center mb-8'>
+        My Orders
+      </h1>
       <p className='mt-2 text-slate-500'>Orders currently stored in MongoDB.</p>
 
       <div className='mt-6 overflow-x-auto rounded-xl border bg-gray-100'>

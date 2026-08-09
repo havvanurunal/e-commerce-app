@@ -31,3 +31,9 @@ export type ProductFormState = {
     category?: string;
   };
 };
+
+export const initialProductFormState: ProductFormState = {
+  status: 'idle',
+  message: '',
+  fieldErrors: {},
+};
