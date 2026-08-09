@@ -33,7 +33,6 @@ export function UserFormFields({
   defaultValues,
   formRegisterAction,
   clientFormErrors,
-  isEdit = false,
 }: UserFormFieldsProps) {
   const firstname =
     clientFormErrors?.firstname?.message || fieldErrors?.firstname;
