@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 import { requireUser } from '@/lib/authz';
-import { getCartItems } from '@/app/services/data';
+import { getCartItems, getUserByAuth0Id } from '@/app/services/data';
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,14 +10,20 @@ export async function POST(request: NextRequest) {
     const user = await requireUser();
     const cartItems = await getCartItems(user.sub!);
 
+    const dbUser = await getUserByAuth0Id(user.sub!);
+
+    if (!dbUser) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
     const session = await stripe.checkout.sessions.create({
       line_items: cartItems.map((cartItem) => ({
         price: cartItem.product.stripePriceId,
         quantity: cartItem.quantity,
       })),
       mode: 'payment',
-      success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-      metadata: { userId: user.sub! },
+      success_url: `${origin}/api/checkout/complete?session_id={CHECKOUT_SESSION_ID}`,
+      metadata: { userId: dbUser.id },
     });
 
     if (session.url === null) {

@@ -2,8 +2,8 @@ import { useRouter } from 'next/navigation';
 import { useActionState } from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import { Product } from '@prisma/client';
-import { initialProductFormState } from '@/app/form-state';
 import { EditProductForm } from './EditProductForm';
+import { initialProductFormState } from '@/types/products';
 
 jest.mock('./actions', () => ({
   editProductAction: jest.fn(),
@@ -26,7 +26,7 @@ function createMockProduct(overrides: Partial<Product> = {}): Product {
     productDescription: 'Beauty product',
     price: 20.0,
     stock: 10,
-    category: 'Cosmetic',
+    category: 'SKINCARE',
     images: [],
     createdAt: new Date(),
     updatedAt: new Date(),

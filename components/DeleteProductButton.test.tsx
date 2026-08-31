@@ -8,9 +8,13 @@ jest.mock('@/app/admin/products/actions', () => ({
 
 describe('DeleteProductButton', () => {
   it('deletes the product from admin product page', () => {
-    const { getByText } = render(<DeleteProductButton id='test-product-id' />);
+    const { getByText, getByTestId } = render(
+      <DeleteProductButton id='test-product-id' />
+    );
     const deleteButton = getByText('Delete');
     fireEvent.click(deleteButton);
+    const confirmationDeleteButton = getByTestId('confirm-delete-button');
+    fireEvent.click(confirmationDeleteButton);
     expect(deleteProductAction).toHaveBeenCalledWith('test-product-id');
   });
 });

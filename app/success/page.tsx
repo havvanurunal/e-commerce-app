@@ -1,10 +1,7 @@
-import { redirect } from 'next/navigation';
 import { stripe } from '../../lib/stripe';
 import { CheckCircle } from 'lucide-react';
 import { formatMoney } from '@/lib/utils';
 import Link from 'next/link';
-import { getSessionUser } from '@/lib/authz';
-import { clearCart } from '@/app/services/data';
 
 export default async function Success({
   searchParams,
@@ -22,60 +19,46 @@ export default async function Success({
     expand: ['line_items', 'payment_intent'],
   });
 
-  console.log(session.line_items?.data);
+  return (
+    <section
+      id='success'
+      className='min-h-screen flex flex-col items-center justify-center gap-6 text-center px-4'
+    >
+      <CheckCircle className='text-green-600 size-20' />
 
-  if (session.status === 'open') {
-    return redirect('/');
-  }
-
-  if (session.status === 'complete') {
-    const user = await getSessionUser();
-    if (user?.sub) {
-      await clearCart(user.sub);
-    }
-    return (
-      <section
-        id='success'
-        className='min-h-screen flex flex-col items-center justify-center gap-6 text-center px-4'
-      >
-        <CheckCircle className='text-green-600 size-20' />
-
-        <div className='flex flex-col gap-2'>
-          <h1 className='text-3xl font-medium tracking-wide'>
-            Order Confirmed
-          </h1>
-          <p className='text-gray-500 text-sm tracking-wider uppercase'>
-            Thank you for your purchase.
-          </p>
-        </div>
-
-        <div className='flex flex-col gap-1'>
-          <p className='text-2xl font-medium'>
-            {formatMoney((session.amount_total ?? 0) / 100)}
-          </p>
-          <p className='text-sm text-gray-500'>
-            {session.customer_details?.email}
-          </p>
-        </div>
-
-        <p className='text-sm text-gray-400 max-w-md'>
-          We appreciate your business! A confirmation email will be sent to your
-          email. If you have any questions, please email{' '}
-          <a
-            href='mailto:orders@example.com'
-            className='text-gray-600 underline underline-offset-2'
-          >
-            orders@example.com
-          </a>
-          .
+      <div className='flex flex-col gap-2'>
+        <h1 className='text-3xl font-medium tracking-wide'>Order Confirmed</h1>
+        <p className='text-gray-500 text-sm tracking-wider uppercase'>
+          Thank you for your purchase.
         </p>
-        <Link
-          href='/'
-          className='mt-4 text-sm tracking-widset uppercase underline underline-offset-4 hover: text-gray-900'
+      </div>
+
+      <div className='flex flex-col gap-1'>
+        <p className='text-2xl font-medium'>
+          {formatMoney((session.amount_total ?? 0) / 100)}
+        </p>
+        <p className='text-sm text-gray-500'>
+          {session.customer_details?.email}
+        </p>
+      </div>
+
+      <p className='text-sm text-gray-400 max-w-md'>
+        We appreciate your business! A confirmation email will be sent to your
+        email. If you have any questions, please email{' '}
+        <a
+          href='mailto:orders@example.com'
+          className='text-gray-600 underline underline-offset-2'
         >
-          Continue Shopping
-        </Link>
-      </section>
-    );
-  }
+          orders@example.com
+        </a>
+        .
+      </p>
+      <Link
+        href='/'
+        className='mt-4 text-sm tracking-widset uppercase underline underline-offset-4 hover: text-gray-900'
+      >
+        Continue Shopping
+      </Link>
+    </section>
+  );
 }

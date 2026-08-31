@@ -2,6 +2,7 @@ import { getProducts } from '@/app/services/data';
 import { formatMoney } from '@/lib/utils';
 import Link from 'next/link';
 import { DeleteProductButton } from '@/components/DeleteProductButton';
+import Image from 'next/image';
 
 export default async function AdminProductsPage() {
   const products = await getProducts();
@@ -18,6 +19,7 @@ export default async function AdminProductsPage() {
           <thead className='bg-white/5 text-gray-800'>
             <tr>
               <th className='text-left font-medium px-4 py-3'>ID</th>
+              <th className='text-left font-medium px-4 py-3'>Images</th>
               <th className='text-left font-medium px-4 py-3'>Product Name</th>
               <th className='text-left font-medium px-4 py-3'>
                 Product Description
@@ -26,7 +28,6 @@ export default async function AdminProductsPage() {
               <th className='text-left font-medium px-4 py-3'>Category</th>
               <th className='text-left font-medium px-4 py-3'>Price</th>
               <th className='text-left font-medium px-4 py-3'>Stock</th>
-              <th className='text-left font-medium px-4 py-3'>Images</th>
               <th className='text-left font-medium px-4 py-3'>Actions</th>
             </tr>
           </thead>
@@ -41,21 +42,35 @@ export default async function AdminProductsPage() {
               products.map((product) => (
                 <tr
                   key={product.id}
+                  data-testid='product-row'
                   className='border-t border-gray-200 text-gray-600'
                 >
                   <td className='px-4 py-3'>{product.id}</td>
-                  <td className='px-4 py-3'>{product.productName}</td>
+                  <td className='px-4 py-3'>
+                    {product.images[0] && (
+                      <Image
+                        src={product.images[0]}
+                        alt={product.productName}
+                        width={52}
+                        height={52}
+                        className='object-cover rounded'
+                      />
+                    )}
+                  </td>
+                  <td className='px-4 py-3' data-testid='product-name-cell'>
+                    {product.productName}
+                  </td>
                   <td className='px-4 py-3'>{product.productDescription}</td>
                   <td className='px-4 py-3'>{product.productBrand}</td>
                   <td className='px-4 py-3'>{product.category}</td>
                   <td className='px-4 py-3'>{formatMoney(product.price)}</td>
-
                   <td className='px-4 py-3'>{product.stock}</td>
-                  <td className='px-4 py-3'>{product.images.length}</td>
+
                   <td className='px-4 py-3'>
                     <Link
                       href={`/admin/products/${product.id}/edit`}
-                      className='text-blue-700 hover:underline'
+                      className='text-blue-700  px-5 py-1 bg-blue-200 hover:bg-blue-300
+                      rounded-lg'
                     >
                       Edit
                     </Link>

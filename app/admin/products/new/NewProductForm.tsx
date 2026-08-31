@@ -11,8 +11,8 @@ import {
 } from '@/schemas/products';
 import { useRouter } from 'next/navigation';
 import { createProductAction } from './actions';
-import { initialProductFormState } from '@/app/form-state';
 import { ProductFormFields } from '@/components/ProductFormFields';
+import { initialProductFormState } from '@/types/products';
 
 export function NewProductForm() {
   const [newProductState, newProductFormAction, isPending] = useActionState(
@@ -37,7 +37,7 @@ export function NewProductForm() {
   useEffect(() => {
     if (newProductState.status === 'success') {
       setTimeout(() => {
-        router.push('/');
+        router.push('/admin/products');
       }, 2000);
     }
   }, [newProductState.status, router]);

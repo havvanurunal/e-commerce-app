@@ -4,7 +4,8 @@ import { createContext, useContext, useState } from 'react';
 
 const CartContext = createContext({
   isOpen: false,
-  setIsOpen: (value: boolean) => {},
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  setIsOpen: (_value: boolean) => {},
 });
 
 export function CartProvider({ children }: { children: React.ReactNode }) {

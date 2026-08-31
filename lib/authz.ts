@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import { auth0 } from '@/lib/auth0';
+import { prisma } from './prisma';
 
 export const ROLES_CLAIM = 'https://ecom-app/roles';
 
@@ -71,6 +72,22 @@ export async function getSessionUser(): Promise<Auth0SessionUser | null> {
     user && !Array.isArray(userRolesClaim) && rolesFromIdToken.length > 0
       ? ({ ...user, [ROLES_CLAIM]: rolesFromIdToken } as Auth0SessionUser)
       : user;
+
+  if (normalizedUser?.sub) {
+    const existingUser = await prisma.user.findUnique({
+      where: { auth0UserId: normalizedUser.sub },
+      select: { id: true },
+    });
+
+    if (!existingUser) {
+      await prisma.user.create({
+        data: {
+          auth0UserId: normalizedUser.sub,
+          email: normalizedUser.email!,
+        },
+      });
+    }
+  }
   return normalizedUser;
 }
 

@@ -8,9 +8,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { EditProductFormInput, EditProductSchema } from '@/schemas/products';
 import { useRouter } from 'next/navigation';
 import { editProductAction } from './actions';
-import { initialProductFormState } from '@/app/form-state';
 import { ProductFormFields } from '@/components/ProductFormFields';
 import type { Product } from '@prisma/client';
+import { initialProductFormState } from '@/types/products';
 
 export function EditProductForm({ product }: { product: Product }) {
   const [editProductState, editProductFormAction, isPending] = useActionState(

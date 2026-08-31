@@ -1,8 +1,8 @@
 import { useRouter } from 'next/navigation';
 import { useActionState } from 'react';
 import { render } from '@testing-library/react';
-import { initialProductFormState } from '@/app/form-state';
 import { NewProductForm } from './NewProductForm';
+import { initialProductFormState } from '@/types/products';
 
 jest.mock('./actions', () => ({
   createProductAction: jest.fn(),
@@ -50,7 +50,7 @@ describe('NewProductForm', () => {
     const { getByText } = render(<NewProductForm />);
     expect(getByText('A new product added successfully!')).toBeInTheDocument();
     jest.advanceTimersByTime(2000);
-    expect(pushMock).toHaveBeenCalledWith('/');
+    expect(pushMock).toHaveBeenCalledWith('/admin/products');
   });
   it('shows initial form', () => {
     (useRouter as jest.Mock).mockReturnValue({

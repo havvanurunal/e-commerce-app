@@ -5,7 +5,7 @@ export const BaseProductSchema = z.object({
     .string()
     .trim()
     .min(3, { message: 'Product name must be at least 3 characters!' })
-    .max(30, { message: 'Product name must be max 30 characters!' }),
+    .max(50, { message: 'Product name must be max 50 characters!' }),
   productBrand: z
     .string()
     .trim()

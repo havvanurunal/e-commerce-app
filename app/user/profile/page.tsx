@@ -1,6 +1,8 @@
 import { TypographyH1 } from '@/components/ui/h1';
 import { auth0 } from '@/lib/auth0';
-import Image from 'next/image';
+import { getUserByAuth0Id } from '@/app/services/data';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 export default async function Profile() {
   const session = await auth0.getSession();
@@ -15,22 +17,48 @@ export default async function Profile() {
     );
   }
 
-  const user = session.user;
+  const dbUser = await getUserByAuth0Id(session.user.sub!);
+  if (!dbUser) {
+    return (
+      <main className='min-h-dvh flex items-center justify-center text-center'>
+        <TypographyH1>Something went wrong loading your profile.</TypographyH1>
+      </main>
+    );
+  }
+
+  const fields = [
+    { label: 'Email', value: dbUser.email },
+    { label: 'First name', value: dbUser.firstname },
+    { label: 'Last name', value: dbUser.lastname },
+    { label: 'Phone number', value: dbUser.phoneNumber },
+    { label: 'Address line 1', value: dbUser.address?.line1 },
+    { label: 'City', value: dbUser.address?.city },
+    { label: 'Postal code', value: dbUser.address?.postalCode },
+    { label: 'Country', value: dbUser.address?.country },
+  ];
 
   return (
-    <div className='flex flex-col mx-auto py-10 px-4 font-sans'>
-      <Image
-        src={
-          user.picture ||
-          `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%2363b3ed'/%3E%3Cpath d='M50 45c7.5 0 13.64-6.14 13.64-13.64S57.5 17.72 50 17.72s-13.64 6.14-13.64 13.64S42.5 45 50 45zm0 6.82c-9.09 0-27.28 4.56-27.28 13.64v3.41c0 1.88 1.53 3.41 3.41 3.41h47.74c1.88 0 3.41-1.53 3.41-3.41v-3.41c0-9.08-18.19-13.64-27.28-13.64z' fill='%23fff'/%3E%3C/svg%3E`
-        }
-        alt={user.name || 'User profile'}
-        className='profile-picture'
-        width='100'
-        height='100'
-      />
-      <h2 className='profile-name'>{user.name}</h2>
-      <p className='profile-email'>{user.email}</p>
+    <div className='max-w-xl mx-auto py-10 px-4'>
+      <h1 className='text-2xl font-semibold tracking-[-0.02em] text-center mb-8'>
+        My Profile
+      </h1>
+
+      <div className='rounded-xl border bg-gray-50 divide-y divide-gray-200'>
+        {fields.map(({ label, value }) => (
+          <div key={label} className='flex justify-between px-4 py-3 text-sm'>
+            <span className='text-gray-500'>{label}</span>
+            <span className='font-medium text-gray-900'>
+              {value || <span className='text-gray-400 italic'>Not set</span>}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <div className='mt-6 flex justify-center'>
+        <Button asChild>
+          <Link href='/user/profile/edit'>Edit Profile</Link>
+        </Button>
+      </div>
     </div>
   );
 }

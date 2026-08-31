@@ -9,6 +9,7 @@ import {
   ROLES_CLAIM,
   tryGetRolesClaimFromIdToken,
 } from './authz';
+import { prisma } from './prisma';
 
 jest.mock('./auth0', () => ({
   auth0: {
@@ -20,12 +21,27 @@ jest.mock('next/navigation', () => ({
   redirect: jest.fn(),
 }));
 
+jest.mock('@/lib/prisma', () => ({
+  prisma: {
+    user: {
+      findUnique: jest.fn(),
+      create: jest.fn(),
+    },
+  },
+}));
+
 function useWithRoles(roles: AppRole[]) {
   return {
     sub: 'auth0|123',
     [ROLES_CLAIM]: roles,
   };
 }
+
+beforeEach(() => {
+  (prisma.user.findUnique as jest.Mock).mockResolvedValue({
+    id: 'mock-user-id',
+  });
+});
 
 describe('tryGetRolesClaimFromIdToken', () => {
   it('returns roles from a valid token', () => {
