@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import { editProductAction } from './actions';
 import { initialProductFormState } from '@/app/form-state';
 import { ProductFormFields } from '@/components/ProductFormFields';
-import { Category, type Product } from '@prisma/client';
+import { type Product } from '@prisma/client';
 
 export function EditProductForm({ product }: { product: Product }) {
   const [editProductState, editProductFormAction, isPending] = useActionState(

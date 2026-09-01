@@ -11,7 +11,10 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from '@/components/ui/sidebar';
+import { usePathname } from 'next/navigation';
+import { useEffect } from 'react';
 
 const menuItems = [
   { href: '/user/profile', label: 'Profile', icon: User },
@@ -19,12 +22,17 @@ const menuItems = [
 ];
 
 export function UserSidebar() {
+  const pathname = usePathname();
+  const { isMobile, setOpenMobile } = useSidebar();
+
+  useEffect(() => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  }, [pathname]);
   return (
-    <Sidebar
-      collapsible='none'
-      className='rounded-2xl border border-gray-200 bg-white'
-    >
-      <SidebarHeader className='px-4 py-5 border-b border-gray-200'>
+    <Sidebar className='rounded-lg overflow-hidden border border-gray-200 bg-white sticky'>
+      <SidebarHeader className='px-4 py-5 border-b-2 border-gray-200'>
         <Link
           href='/admin'
           className='text-base font-semibold text-gray-900 tracking-tight'

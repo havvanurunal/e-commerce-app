@@ -37,7 +37,7 @@ export default async function UserOrdersPage() {
 
       <div className='mt-6 overflow-x-auto rounded-xl border bg-gray-100'>
         <table className='min-w-full text-sm'>
-          <thead className='bg-white/5 text-gray-800'>
+          <thead className='hidden md:table-header-group bg-white/5 text-gray-800'>
             <tr>
               <th className='text-left font-medium px-4 py-3'>Order ID</th>
               <th className='text-left font-medium px-4 py-3'>Date placed</th>
@@ -49,7 +49,7 @@ export default async function UserOrdersPage() {
 
           <tbody>
             {orders.length === 0 ? (
-              <tr className='border-t border-white/10 text-gray-600'>
+              <tr className='block md:table-row border-t border-white/10 text-gray-600'>
                 <td className='px-4 py-4' colSpan={5}>
                   No orders found.
                 </td>
@@ -58,22 +58,41 @@ export default async function UserOrdersPage() {
               orders.map((order) => (
                 <tr
                   key={order.id}
-                  className='border-t border-gray-200 text-gray-600'
+                  className='block md:table-row mb-4 md:mb-0 rounded-lg md:rounded-none bg-white md:bg-transparent border md:border-0 border-gray-200 border-t md:border-t text-gray-600'
                   data-testid='order-row'
                 >
-                  <td className='px-4 py-3'>{order.id}</td>
-                  <td className='px-4 py-3'>
+                  <td
+                    data-label='Order ID'
+                    className='block md:table-cell px-4 py-2 md:py-3 before:content-[attr(data-label)] before:block before:text-xs before:font-medium before:text-gray-400 md:before:content-none'
+                  >
+                    {order.id}
+                  </td>
+                  <td
+                    data-label='Date placed'
+                    className='block md:table-cell px-4 py-2 md:py-3 before:content-[attr(data-label)] before:block before:text-xs before:font-medium before:text-gray-400 md:before:content-none'
+                  >
                     {order.createdAt.toLocaleDateString()}
                   </td>
-                  <td className='px-4 py-3'>{order.status}</td>
-                  <td className='px-4 py-3'>
+                  <td
+                    data-label='Status'
+                    className='block md:table-cell px-4 py-2 md:py-3 before:content-[attr(data-label)] before:block before:text-xs before:font-medium before:text-gray-400 md:before:content-none'
+                  >
+                    {order.status}
+                  </td>
+                  <td
+                    data-label='Items'
+                    className='block md:table-cell px-4 py-2 md:py-3 before:content-[attr(data-label)] before:block before:text-xs before:font-medium before:text-gray-400 md:before:content-none'
+                  >
                     {order.orderItems.map((orderItem) => (
                       <div key={orderItem.id}>
                         {orderItem.product.productName} x {orderItem.quantity}
                       </div>
                     ))}
                   </td>
-                  <td className='px-4 py-3'>
+                  <td
+                    data-label='Total'
+                    className='block md:table-cell px-4 py-2 md:py-3 before:content-[attr(data-label)] before:block before:text-xs before:font-medium before:text-gray-400 md:before:content-none'
+                  >
                     {formatMoney(
                       order.orderItems.reduce(
                         (sum, orderItem) =>
