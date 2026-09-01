@@ -19,6 +19,7 @@ export default async function Profile() {
 
   return (
     <div className='flex flex-col mx-auto py-10 px-4 font-sans'>
+      <h1 className='text-2xl font-medium text-center mb-8'>My Account</h1>
       <Image
         src={
           user.picture ||

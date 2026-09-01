@@ -5,9 +5,11 @@ import { addToBasketAction } from '@/app/cart/actions';
 
 export default function CheckoutButton({
   productId,
+  disabled,
 }: {
   stripePriceId: string;
   productId: string;
+  disabled?: boolean;
 }) {
   async function handleClick() {
     await addToBasketAction(productId);
@@ -25,6 +27,7 @@ export default function CheckoutButton({
       variant='default'
       className='cursor-pointer bg-gray-700 hover:bg-gray-800'
       onClick={handleClick}
+      disabled={disabled}
     >
       Buy Now
     </Button>

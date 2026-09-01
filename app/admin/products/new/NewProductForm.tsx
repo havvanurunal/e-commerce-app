@@ -13,6 +13,7 @@ import { useRouter } from 'next/navigation';
 import { createProductAction } from './actions';
 import { initialProductFormState } from '@/app/form-state';
 import { ProductFormFields } from '@/components/ProductFormFields';
+import { Category } from '@prisma/client';
 
 export function NewProductForm() {
   const [newProductState, newProductFormAction, isPending] = useActionState(
@@ -26,18 +27,20 @@ export function NewProductForm() {
 
   const {
     register,
+    control,
     formState: { errors: clientFormErrors },
   } = useForm<CreateProductFormInput>({
     mode: 'onBlur',
     resolver: zodResolver(
       CreateProductSchema
     ) as Resolver<CreateProductFormInput>,
+    defaultValues: { category: '' as Category },
   });
 
   useEffect(() => {
     if (newProductState.status === 'success') {
       setTimeout(() => {
-        router.push('/');
+        router.push('/admin/products');
       }, 2000);
     }
   }, [newProductState.status, router]);
@@ -72,6 +75,7 @@ export function NewProductForm() {
             register as UseFormRegister<CreateProductFormInput>
           }
           clientFormErrors={clientFormErrors}
+          control={control}
         />
 
         {safeState.message && (

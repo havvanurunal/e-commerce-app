@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { Category } from '@prisma/client';
 
 export enum Currency {
   SEK = 'SEK',
@@ -13,8 +14,9 @@ interface ProductPayload {
   productDescription: string;
   price: number;
   stock: number;
-  category: string;
+  category: Category;
   images: string[];
+  isActive?: boolean;
   stripeProductId: string;
   stripePriceId: string;
 }
@@ -34,12 +36,20 @@ export async function createProduct(product: ProductPayload) {
     },
   });
 }
+export async function getAllProducts() {
+  return await prisma.product.findMany({
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+}
 
 export async function getProducts() {
   return await prisma.product.findMany({
     orderBy: {
       createdAt: 'desc',
     },
+    where: { isActive: true },
   });
 }
 
@@ -64,6 +74,7 @@ export async function updateProduct(
       category: product.category,
       images: product.images,
       updatedAt: new Date(),
+      isActive: product.isActive,
       stripeProductId: product.stripeProductId,
       stripePriceId: product.stripePriceId,
     },
@@ -95,14 +106,12 @@ export async function updateCart(
   productId: string,
   quantity: number
 ) {
-  // 1. Find or create the Cart for this user
   const cart = await prisma.cart.upsert({
     where: { userId },
     update: {},
     create: { userId },
   });
 
-  // 2. Find or create/update the CartItem inside that cart
   const existingItem = await prisma.cartItem.findFirst({
     where: { cartId: cart.id, productId },
   });
@@ -126,7 +135,6 @@ export async function deleteCart(cartItemId: string) {
 }
 
 export async function clearCart(userId: string) {
-  // v2
   const cart = await prisma.cart.findUnique({
     where: { userId },
   });
@@ -154,4 +162,39 @@ export async function decrementQuantity(cartItemId: string) {
     where: { id: cartItemId },
     data: { quantity: { decrement: 1 } },
   });
+}
+
+export async function getUserByAuth0Id(auth0UserId: string) {
+  return prisma.user.findUnique({ where: { auth0UserId } });
+}
+
+export async function getUserOrders(userId: string) {
+  const orders = await prisma.order.findMany({
+    where: { userId },
+    include: {
+      orderItems: {
+        include: {
+          product: true,
+        },
+      },
+    },
+  });
+  return orders;
+}
+
+export async function getAllOrders() {
+  const orders = await prisma.order.findMany({
+    orderBy: {
+      createdAt: 'desc',
+    },
+    include: {
+      user: true,
+      orderItems: {
+        include: {
+          product: true,
+        },
+      },
+    },
+  });
+  return orders;
 }

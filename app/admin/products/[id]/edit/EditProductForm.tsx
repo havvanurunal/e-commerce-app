@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import { editProductAction } from './actions';
 import { initialProductFormState } from '@/app/form-state';
 import { ProductFormFields } from '@/components/ProductFormFields';
-import type { Product } from '@prisma/client';
+import { type Product } from '@prisma/client';
 
 export function EditProductForm({ product }: { product: Product }) {
   const [editProductState, editProductFormAction, isPending] = useActionState(
@@ -24,10 +24,12 @@ export function EditProductForm({ product }: { product: Product }) {
 
   const {
     register,
+    control,
     formState: { errors: clientFormErrors },
   } = useForm<EditProductFormInput>({
     mode: 'onBlur',
     resolver: zodResolver(EditProductSchema) as Resolver<EditProductFormInput>,
+    defaultValues: { category: product.category },
   });
 
   useEffect(() => {
@@ -69,6 +71,7 @@ export function EditProductForm({ product }: { product: Product }) {
           clientFormErrors={clientFormErrors}
           defaultValues={product}
           isEdit={true}
+          control={control}
         />
 
         {safeState.message && (

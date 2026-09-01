@@ -2,7 +2,13 @@ import { useCart } from './CartProvider';
 import { render, fireEvent } from '@testing-library/react';
 import { CartDrawer } from './CartDrawer';
 
-jest.mock('./CartContents', () => () => <div />);
+jest.mock(
+  './CartContents',
+  () =>
+    function CartContentsMock() {
+      return <div />;
+    }
+);
 
 jest.mock('./CartProvider', () => ({
   useCart: jest.fn(),

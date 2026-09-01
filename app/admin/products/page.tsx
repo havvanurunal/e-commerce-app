@@ -1,10 +1,13 @@
-import { getProducts } from '@/app/services/data';
+import { getAllProducts } from '@/app/services/data';
 import { formatMoney } from '@/lib/utils';
 import Link from 'next/link';
 import { DeleteProductButton } from '@/components/DeleteProductButton';
+import Image from 'next/image';
+import { categoryLabels } from '@/lib/constants';
+import { ToggleProductActivationButton } from '@/components/ToggleProductActivationButton';
 
 export default async function AdminProductsPage() {
-  const products = await getProducts();
+  const products = await getAllProducts();
 
   return (
     <div>
@@ -18,6 +21,7 @@ export default async function AdminProductsPage() {
           <thead className='bg-white/5 text-gray-800'>
             <tr>
               <th className='text-left font-medium px-4 py-3'>ID</th>
+              <th className='text-left font-medium px-4 py-3'>Images</th>
               <th className='text-left font-medium px-4 py-3'>Product Name</th>
               <th className='text-left font-medium px-4 py-3'>
                 Product Description
@@ -26,7 +30,6 @@ export default async function AdminProductsPage() {
               <th className='text-left font-medium px-4 py-3'>Category</th>
               <th className='text-left font-medium px-4 py-3'>Price</th>
               <th className='text-left font-medium px-4 py-3'>Stock</th>
-              <th className='text-left font-medium px-4 py-3'>Images</th>
               <th className='text-left font-medium px-4 py-3'>Actions</th>
             </tr>
           </thead>
@@ -41,26 +44,48 @@ export default async function AdminProductsPage() {
               products.map((product) => (
                 <tr
                   key={product.id}
+                  data-testid='product-row'
                   className='border-t border-gray-200 text-gray-600'
                 >
                   <td className='px-4 py-3'>{product.id}</td>
-                  <td className='px-4 py-3'>{product.productName}</td>
+                  <td className='px-4 py-3'>
+                    {product.images[0] && (
+                      <Image
+                        src={product.images[0]}
+                        alt={product.productName}
+                        width={400}
+                        height={192}
+                        className='object-cover rounded'
+                      />
+                    )}
+                  </td>
+                  <td className='px-4 py-3' data-testid='product-name-cell'>
+                    {product.productName}
+                  </td>
                   <td className='px-4 py-3'>{product.productDescription}</td>
                   <td className='px-4 py-3'>{product.productBrand}</td>
-                  <td className='px-4 py-3'>{product.category}</td>
-                  <td className='px-4 py-3'>{formatMoney(product.price)}</td>
-
-                  <td className='px-4 py-3'>{product.stock}</td>
-                  <td className='px-4 py-3'>{product.images.length}</td>
                   <td className='px-4 py-3'>
-                    <Link
-                      href={`/admin/products/${product.id}/edit`}
-                      className='text-blue-700 hover:underline'
-                    >
-                      Edit
-                    </Link>
+                    {categoryLabels[product.category]}
+                  </td>
+                  <td className='px-4 py-3'>{formatMoney(product.price)}</td>
+                  <td className='px-4 py-3'>{product.stock}</td>
 
-                    <DeleteProductButton id={product.id} />
+                  <td className='px-4 py-3'>
+                    <div className='flex flex-col items-center gap-2'>
+                      <Link
+                        href={`/admin/products/${product.id}/edit`}
+                        className='text-blue-700 px-4.5 py-0.5 bg-blue-200 hover:bg-blue-300
+                      rounded-lg border border-blue-300'
+                      >
+                        Edit
+                      </Link>
+
+                      <DeleteProductButton id={product.id} />
+                      <ToggleProductActivationButton
+                        id={product.id}
+                        isActive={product.isActive}
+                      />
+                    </div>
                   </td>
                 </tr>
               ))

@@ -5,7 +5,13 @@ import { addToBasketAction } from './actions';
 import { useCart } from './CartProvider';
 import { useRouter } from 'next/navigation';
 
-export default function AddtoBasket({ productId }: { productId: string }) {
+export default function AddtoBasket({
+  productId,
+  disabled,
+}: {
+  productId: string;
+  disabled?: boolean;
+}) {
   const { setIsOpen } = useCart();
   const router = useRouter();
 
@@ -24,6 +30,7 @@ export default function AddtoBasket({ productId }: { productId: string }) {
       className='flex-1 cursor-pointer'
       type='submit'
       role='link'
+      disabled={disabled}
     >
       Add to Basket
     </Button>
